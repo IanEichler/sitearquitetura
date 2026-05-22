@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Albaces Arquitetura | Escritório em Rondonópolis-MT</title>
+  <meta name="description" content="Projetos residenciais e comerciais, design de interiores e renders 3D em Rondonópolis-MT. Solicite seu orçamento." />
+  <meta property="og:title" content="Albaces Arquitetura | Rondonópolis-MT" />
+  <meta property="og:description" content="Transformamos sua visão em arquitetura real." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0B1F3A" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- ── NAVBAR ── -->
+  <nav id="navbar">
+    <div class="nav-inner container">
+      <a href="#" class="nav-logo">
+        <div class="logo-mark"><span class="logo-letter">A</span></div>
+        <span class="logo-text">ALBACES</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#sobre">Sobre</a></li>
+        <li><a href="#servicos">Serviços</a></li>
+        <li><a href="#portfolio">Projetos</a></li>
+        <li><a href="#contato">Contato</a></li>
+      </ul>
+      <button class="btn btn-primary nav-cta" data-modal="orcamento">Orçamento Grátis</button>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-close" id="mobileClose">✕</button>
+    <ul>
+      <li><a href="#sobre"     class="mobile-link">Sobre</a></li>
+      <li><a href="#servicos"  class="mobile-link">Serviços</a></li>
+      <li><a href="#portfolio" class="mobile-link">Projetos</a></li>
+      <li><a href="#contato"   class="mobile-link">Contato</a></li>
+      <li><button class="btn btn-primary mobile-link" data-modal="orcamento">Orçamento Grátis</button></li>
+    </ul>
+  </div>
+
+  <!-- ── HERO ── -->
+  <section id="hero">
+    <div class="hero-bg">
+      <img
+        src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=85"
+        alt="Projeto arquitetônico Albaces"
+        class="hero-img"
+        loading="eager"
+      />
+      <div class="hero-overlay"></div>
+    </div>
+
+    <div class="hero-content container">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Rondonópolis, Mato Grosso
+      </div>
+      <h1 class="hero-title">
+        Transformamos<br />
+        sua visão em<br />
+        <em>arquitetura real.</em>
+      </h1>
+      <p class="hero-sub">
+        Projetos residenciais, comerciais e de interiores com identidade,
+        técnica e atenção a cada detalhe.
+      </p>
+      <div class="hero-btns">
+        <a href="#portfolio" class="btn btn-primary">Ver Projetos →</a>
+        <a href="https://wa.me/5566999731937" target="_blank" rel="noopener" class="btn btn-outline">Falar no WhatsApp</a>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── STATS ── -->
+  <section id="stats">
+    <div class="container stats-grid">
+      <div class="stat-item">
+        <div class="stat-number">
+          <span class="count" data-target="120">0</span><span class="stat-sym gold">+</span>
+        </div>
+        <span class="stat-label">Projetos Entregues</span>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat-item">
+        <div class="stat-number">
+          <span class="count" data-target="8">0</span><span class="stat-sym gold"> anos</span>
+        </div>
+        <span class="stat-label">de Experiência</span>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat-item">
+        <div class="stat-number">
+          <span class="count" data-target="4">0</span>
+        </div>
+        <span class="stat-label">Cidades Atendidas</span>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat-item">
+        <div class="stat-number">
+          <span class="count" data-target="100">0</span><span class="stat-sym gold">%</span>
+        </div>
+        <span class="stat-label">Satisfação Garantida</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SOBRE ── -->
+  <section id="sobre">
+    <div class="container sobre-grid">
+
+      <div class="sobre-text reveal">
+        <div class="section-badge">
+          <div class="badge-line"></div><span>SOBRE NÓS</span>
+        </div>
+        <h2 class="section-title">
+          Arquitetura que<br /><em>respeita</em> quem você é
+        </h2>
+        <p>
+          Somos um escritório de arquitetura com mais de 8 anos de experiência
+          em Rondonópolis e região. Cada projeto nasce de uma escuta cuidadosa
+          — porque entendemos que um espaço bem projetado transforma vidas.
+        </p>
+        <p>
+          Da concepção ao acompanhamento de obra, cuidamos de cada detalhe
+          com rigor técnico e sensibilidade estética.
+        </p>
+        <a href="#contato" class="btn btn-dark">Conversar com a equipe →</a>
+      </div>
+
+      <div class="sobre-media reveal reveal-delay-1">
+        <div class="sobre-img-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=900&q=85"
+            alt="Escritório Albaces"
+            loading="lazy"
+          />
+        </div>
+        <div class="sobre-float-card">
+          <span class="float-num">+120</span>
+          <span class="float-label">projetos realizados</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── SERVIÇOS ── -->
+  <section id="servicos">
+    <div class="container">
+      <div class="section-header reveal">
+        <div>
+          <div class="section-badge">
+            <div class="badge-line"></div><span>SERVIÇOS</span>
+          </div>
+          <h2 class="section-title">O que fazemos<br /><em>por você</em></h2>
+        </div>
+        <p class="section-sub">
+          Soluções completas em arquitetura e design,<br />
+          do conceito à execução final.
+        </p>
+      </div>
+
+      <div class="services-grid">
+
+        <div class="service-card reveal">
+          <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=700&q=80" alt="Projeto Residencial" loading="lazy" />
+          <div class="service-card-body">
+            <span class="svc-num">01</span>
+            <div class="svc-icon"><i data-lucide="home"></i></div>
+            <h3>Projeto Residencial</h3>
+            <p>Casas e apartamentos com personalidade, conforto e eficiência</p>
+          </div>
+        </div>
+
+        <div class="service-card reveal reveal-delay-1">
+          <img src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=700&q=80" alt="Projeto Comercial" loading="lazy" />
+          <div class="service-card-body">
+            <span class="svc-num">02</span>
+            <div class="svc-icon"><i data-lucide="building-2"></i></div>
+            <h3>Projeto Comercial</h3>
+            <p>Espaços que reforçam a identidade da sua marca</p>
+          </div>
+        </div>
+
+        <div class="service-card reveal reveal-delay-2">
+          <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=700&q=80" alt="Design de Interiores" loading="lazy" />
+          <div class="service-card-body">
+            <span class="svc-num">03</span>
+            <div class="svc-icon"><i data-lucide="armchair"></i></div>
+            <h3>Design de Interiores</h3>
+            <p>Materiais, cores e mobiliário alinhados ao seu estilo</p>
+          </div>
+        </div>
+
+        <div class="service-card reveal reveal-delay-1">
+          <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=700&q=80" alt="Renderização 3D" loading="lazy" />
+          <div class="service-card-body">
+            <span class="svc-num">04</span>
+            <div class="svc-icon"><i data-lucide="box"></i></div>
+            <h3>Renderização 3D</h3>
+            <p>Visualize com detalhes realistas antes de construir</p>
+          </div>
+        </div>
+
+        <div class="service-card reveal reveal-delay-2">
+          <img src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=700&q=80" alt="Reforma e Retrofit" loading="lazy" />
+          <div class="service-card-body">
+            <span class="svc-num">05</span>
+            <div class="svc-icon"><i data-lucide="hammer"></i></div>
+            <h3>Reforma e Retrofit</h3>
+            <p>Revitalização com modernização funcional e estética</p>
+          </div>
+        </div>
+
+        <div class="service-card reveal reveal-delay-3">
+          <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=700&q=80" alt="Consultoria" loading="lazy" />
+          <div class="service-card-body">
+            <span class="svc-num">06</span>
+            <div class="svc-icon"><i data-lucide="file-text"></i></div>
+            <h3>Consultoria</h3>
+            <p>Orientação técnica para decisões em projetos e investimentos</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PORTFÓLIO ── -->
+  <section id="portfolio">
+    <div class="container">
+      <div class="section-header reveal">
+        <div>
+          <div class="section-badge">
+            <div class="badge-line"></div><span>PORTFÓLIO</span>
+          </div>
+          <h2 class="section-title">Projetos<br /><em>realizados</em></h2>
+        </div>
+        <div class="portfolio-filters">
+          <button class="filter-btn active" data-filter="all">Todos</button>
+          <button class="filter-btn" data-filter="residencial">Residencial</button>
+          <button class="filter-btn" data-filter="comercial">Comercial</button>
+          <button class="filter-btn" data-filter="interiores">Interiores</button>
+          <button class="filter-btn" data-filter="3d">3D</button>
+        </div>
+      </div>
+
+      <!-- Linha 1: destaque grande + 1 card -->
+      <div class="pf-row pf-row-1">
+        <a class="pf-card pf-feat reveal" data-category="residencial" href="/projeto.html?slug=residencia-modern">
+          <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85" alt="Residência Modern" loading="lazy" />
+          <div class="pf-overlay">
+            <span class="pf-tag">Residencial</span>
+            <h3>Residência Modern</h3>
+            <span class="pf-meta">Rondonópolis · 2024</span>
+          </div>
+        </a>
+        <a class="pf-card reveal reveal-delay-1" data-category="interiores" href="/projeto.html?slug=living-minimalista">
+          <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=700&q=85" alt="Living Minimalista" loading="lazy" />
+          <div class="pf-overlay">
+            <span class="pf-tag">Interiores</span>
+            <h3>Living Minimalista</h3>
+            <span class="pf-meta">Cuiabá · 2024</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Linha 2: 3 cards iguais -->
+      <div class="pf-row pf-row-2">
+        <a class="pf-card reveal" data-category="comercial" href="/projeto.html?slug=escritorio-corporativo">
+          <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=700&q=85" alt="Escritório Corporativo" loading="lazy" />
+          <div class="pf-overlay">
+            <span class="pf-tag">Comercial</span>
+            <h3>Escritório Corporativo</h3>
+            <span class="pf-meta">Rondonópolis · 2024</span>
+          </div>
+        </a>
+        <a class="pf-card reveal reveal-delay-1" data-category="interiores" href="/projeto.html?slug=cozinha-gourmet">
+          <img src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=700&q=85" alt="Cozinha Gourmet" loading="lazy" />
+          <div class="pf-overlay">
+            <span class="pf-tag">Interiores</span>
+            <h3>Cozinha Gourmet</h3>
+            <span class="pf-meta">Rondonópolis · 2023</span>
+          </div>
+        </a>
+        <a class="pf-card reveal reveal-delay-2" data-category="3d" href="/projeto.html?slug=casa-contemporanea">
+          <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=700&q=85" alt="Casa Contemporânea" loading="lazy" />
+          <div class="pf-overlay">
+            <span class="pf-tag">3D</span>
+            <h3>Casa Contemporânea</h3>
+            <span class="pf-meta">Sinop · 2024</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Linha 3: 2 cards largos -->
+      <div class="pf-row pf-row-3">
+        <a class="pf-card reveal" data-category="residencial" href="/projeto.html?slug=casa-alto-padrao">
+          <img src="https://images.unsplash.com/photo-1613977257363-707ba9348227?w=900&q=85" alt="Casa Alto Padrão" loading="lazy" />
+          <div class="pf-overlay">
+            <span class="pf-tag">Residencial</span>
+            <h3>Casa Alto Padrão</h3>
+            <span class="pf-meta">Rondonópolis · 2023</span>
+          </div>
+        </a>
+        <a class="pf-card reveal reveal-delay-1" data-category="comercial" href="/projeto.html?slug=galeria-comercial">
+          <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=900&q=85" alt="Galeria Comercial" loading="lazy" />
+          <div class="pf-overlay">
+            <span class="pf-tag">Comercial</span>
+            <h3>Galeria Comercial</h3>
+            <span class="pf-meta">Cuiabá · 2023</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="pf-cta reveal">
+        <a href="#contato" class="btn btn-primary">Ver Todos os Projetos →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROCESSO ── -->
+  <section id="processo">
+    <div class="container">
+      <div class="section-header processo-header reveal">
+        <div class="section-badge" style="justify-content:center">
+          <div class="badge-line"></div><span>COMO TRABALHAMOS</span>
+        </div>
+        <h2 class="section-title" style="color:#fff;text-align:center">Nosso processo</h2>
+      </div>
+
+      <div class="process-wrap">
+        <svg class="process-svg" viewBox="0 0 1000 2" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="0" y1="1" x2="1000" y2="1" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+          <line class="process-line-fill" x1="0" y1="1" x2="1000" y2="1" stroke="#1A6FD4" stroke-width="1.5"/>
+        </svg>
+
+        <div class="process-steps">
+          <div class="process-step reveal">
+            <div class="step-circle"><span class="step-num">01</span><i data-lucide="message-circle"></i></div>
+            <h4>Briefing</h4>
+            <p>Entendemos sua visão, necessidades e estilo de vida</p>
+          </div>
+          <div class="process-step reveal reveal-delay-1">
+            <div class="step-circle"><span class="step-num">02</span><i data-lucide="pencil"></i></div>
+            <h4>Conceito</h4>
+            <p>Estudos de viabilidade e anteprojeto inicial</p>
+          </div>
+          <div class="process-step reveal reveal-delay-2">
+            <div class="step-circle"><span class="step-num">03</span><i data-lucide="ruler"></i></div>
+            <h4>Projeto</h4>
+            <p>Desenvolvimento técnico completo com renders 3D</p>
+          </div>
+          <div class="process-step reveal reveal-delay-3">
+            <div class="step-circle"><span class="step-num">04</span><i data-lucide="hard-hat"></i></div>
+            <h4>Execução</h4>
+            <p>Acompanhamento técnico durante toda a obra</p>
+          </div>
+          <div class="process-step reveal reveal-delay-4">
+            <div class="step-circle"><span class="step-num">05</span><i data-lucide="check-circle"></i></div>
+            <h4>Entrega</h4>
+            <p>Seu espaço realizado exatamente como planejado</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DEPOIMENTOS ── -->
+  <section id="depoimentos">
+    <div class="container">
+      <div class="testi-header reveal">
+        <div class="section-badge" style="justify-content:center">
+          <div class="badge-line"></div><span>DEPOIMENTOS</span>
+        </div>
+        <h2 class="section-title">O que nossos<br /><em>clientes dizem</em></h2>
+      </div>
+    </div>
+
+    <div class="testi-carousel-wrap">
+      <!-- fades laterais -->
+      <div class="testi-fade testi-fade-left"></div>
+      <div class="testi-fade testi-fade-right"></div>
+
+      <div class="testi-track" id="testiTrack">
+
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-quote">"A Albaces transformou completamente nossa casa. Cada detalhe foi pensado para nossa família — funcionalidade e beleza em equilíbrio perfeito."</p>
+          <div class="testi-author">
+            <div class="testi-avatar">M</div>
+            <div><strong>Marina Oliveira</strong><span>Residência Familiar · 2024</span></div>
+          </div>
+        </div>
+
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-quote">"O escritório comercial ficou exatamente como eu imaginava. O render 3D me deu total confiança antes de aprovar. Resultado impecável."</p>
+          <div class="testi-author">
+            <div class="testi-avatar">R</div>
+            <div><strong>Ricardo Ferreira</strong><span>Projeto Comercial · 2024</span></div>
+          </div>
+        </div>
+
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-quote">"Profissionalismo do início ao fim. A equipe acompanhou toda a obra e entregou no prazo. Minha cozinha gourmet virou o coração da casa."</p>
+          <div class="testi-author">
+            <div class="testi-avatar">C</div>
+            <div><strong>Carla Mendes</strong><span>Design de Interiores · 2023</span></div>
+          </div>
+        </div>
+
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-quote">"A casa dos nossos sonhos saiu do papel com uma precisão incrível. Os renders mostraram tudo exatamente como ficou na realidade. Superou todas as expectativas."</p>
+          <div class="testi-author">
+            <div class="testi-avatar">P</div>
+            <div><strong>Paulo Santos</strong><span>Casa Alto Padrão · 2023</span></div>
+          </div>
+        </div>
+
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-quote">"Contratamos a Albaces para reformar nosso escritório e o resultado foi incrível. O espaço ficou muito mais funcional e com uma identidade visual forte para nossa marca."</p>
+          <div class="testi-author">
+            <div class="testi-avatar">F</div>
+            <div><strong>Fernanda Lima</strong><span>Escritório Corporativo · 2024</span></div>
+          </div>
+        </div>
+
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-quote">"Reforma completa do apartamento em tempo recorde, sem nenhuma dor de cabeça. A equipe é comprometida e entende exatamente o que o cliente quer antes de começar."</p>
+          <div class="testi-author">
+            <div class="testi-avatar">A</div>
+            <div><strong>André Costa</strong><span>Reforma e Retrofit · 2024</span></div>
+          </div>
+        </div>
+
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-quote">"Os renders 3D foram um diferencial enorme. Consegui visualizar cada ambiente com detalhes reais antes de tomar qualquer decisão. Processo muito transparente e seguro."</p>
+          <div class="testi-author">
+            <div class="testi-avatar">J</div>
+            <div><strong>Juliana Rocha</strong><span>Renderização 3D · 2024</span></div>
+          </div>
+        </div>
+
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-quote">"Do projeto ao acabamento, a Albaces demonstrou expertise e cuidado em cada etapa. Hoje tenho uma casa que reflete quem somos como família. Recomendo de olhos fechados."</p>
+          <div class="testi-author">
+            <div class="testi-avatar">L</div>
+            <div><strong>Luciana Martins</strong><span>Projeto Residencial · 2023</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BRAND DISPLAY ── -->
+  <section id="brand-display">
+    <div class="container brand-inner reveal">
+      <div class="brand-left">
+        <p class="brand-eyebrow">Rondonópolis · Mato Grosso · Desde 2016</p>
+        <h2 class="brand-heading">Arquitetura que <em>inspira,</em><br />espaços que transformam.</h2>
+      </div>
+      <button class="btn btn-outline-white" data-modal="orcamento">Falar com arquiteto →</button>
+    </div>
+    <div class="brand-wordmark" aria-hidden="true">ALBACES</div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section id="cta-section">
+    <div class="cta-bg">
+      <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1600&q=80" alt="" aria-hidden="true" loading="lazy" />
+      <div class="cta-overlay"></div>
+    </div>
+    <div class="cta-content container reveal">
+      <div class="cta-badge">✦ Pronto para começar?</div>
+      <h2 class="cta-title">Transforme seu espaço em<br />algo extraordinário.</h2>
+      <p class="cta-sub">Entre em contato e receba uma consultoria gratuita.</p>
+      <div class="cta-btns">
+        <a href="https://wa.me/5566999731937" target="_blank" rel="noopener" class="btn btn-whatsapp">WhatsApp — Falar Agora</a>
+        <button class="btn btn-ghost" data-modal="orcamento">Solicitar Orçamento</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTATO ── -->
+  <section id="contato">
+    <div class="container contato-cta reveal">
+      <div class="section-badge" style="justify-content:center">
+        <div class="badge-line"></div><span>CONTATO</span>
+      </div>
+      <h2 class="contato-cta-title">
+        Pronto para transformar<br />seu espaço?
+      </h2>
+      <p class="contato-cta-sub">
+        Fale com nossa equipe e receba uma consultoria gratuita.<br />
+        Do conceito à entrega, cuidamos de tudo por você.
+      </p>
+      <button class="btn contato-cta-btn" data-modal="orcamento">
+        Solicitar Orçamento Grátis
+        <i data-lucide="arrow-right"></i>
+      </button>
+      <div class="contato-cta-info">
+        <span><i data-lucide="map-pin"></i> Rondonópolis — MT</span>
+        <span><i data-lucide="phone"></i> (66) 99973-1937</span>
+        <span><i data-lucide="clock"></i> Seg–Sex, 08h–18h</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer id="footer">
+    <div class="container footer-grid">
+      <div class="footer-col footer-brand">
+        <div class="footer-logo">
+          <div class="logo-mark small"><span class="logo-letter">A</span></div>
+          <span class="logo-text">ALBACES</span>
+        </div>
+        <p class="footer-tagline">Arquitetura com identidade,<br />técnica e cuidado.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Navegação</h5>
+        <ul>
+          <li><a href="#sobre">Sobre</a></li>
+          <li><a href="#servicos">Serviços</a></li>
+          <li><a href="#portfolio">Projetos</a></li>
+          <li><a href="#contato">Contato</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Serviços</h5>
+        <ul>
+          <li><a href="#servicos">Residencial</a></li>
+          <li><a href="#servicos">Comercial</a></li>
+          <li><a href="#servicos">Interiores</a></li>
+          <li><a href="#servicos">Renders 3D</a></li>
+          <li><a href="#servicos">Retrofit</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Contato</h5>
+        <ul>
+          <li>Parque Sagrada Família</li>
+          <li>Rondonópolis — MT</li>
+          <li><a href="https://wa.me/5566999731937">(66) 99973-1937</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom container">
+      <span>© 2025 Albaces Arquitetura. Todos os direitos reservados.</span>
+      <span>Desenvolvido com cuidado</span>
+    </div>
+  </footer>
+
+  <!-- WhatsApp float -->
+  <a href="https://wa.me/5566999731937" class="wa-float" target="_blank" rel="noopener" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24" fill="white" width="26" height="26">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
