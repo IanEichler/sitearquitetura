@@ -55,7 +55,7 @@ function animateCursor() {
 }
 animateCursor()
 
-document.querySelectorAll('a, button, .service-card, .pf-card, .filter-btn, .testi-card').forEach(el => {
+document.querySelectorAll('a, button, .service-card, .pf-card, .filter-btn, .testi-card, .demo-btn').forEach(el => {
   el.addEventListener('mouseenter', () => document.body.classList.add('c-hover'))
   el.addEventListener('mouseleave', () => document.body.classList.remove('c-hover'))
 })

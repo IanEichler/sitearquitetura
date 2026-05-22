@@ -152,7 +152,7 @@ button { cursor: none; background: none; border: none; font-family: inherit; }
 #cursor {
   position: fixed; width: 10px; height: 10px;
   background: var(--blue-l); border-radius: 50%;
-  pointer-events: none; z-index: 9999;
+  pointer-events: none; z-index: 100001;
   transform: translate(-50%,-50%);
   transition: width .2s, height .2s;
   will-change: transform;
@@ -160,7 +160,7 @@ button { cursor: none; background: none; border: none; font-family: inherit; }
 #cursor-ring {
   position: fixed; width: 34px; height: 34px;
   border: 1.5px solid var(--blue-l); border-radius: 50%;
-  pointer-events: none; z-index: 9998;
+  pointer-events: none; z-index: 100000;
   transform: translate(-50%,-50%);
   opacity: .45;
   transition: width .25s, height .25s;
