@@ -10,6 +10,11 @@ import { initModal } from './modal.js'
 gsap.registerPlugin(ScrollTrigger)
 initModal()
 
+/* ─── MODAL DEMONSTRAÇÃO ─── */
+document.getElementById('demoClose')?.addEventListener('click', () => {
+  document.getElementById('demoModal').classList.add('hidden')
+})
+
 /* Lucide icons — aguarda CDN carregar */
 const initIcons = () => window.lucide && window.lucide.createIcons()
 document.readyState === 'loading'
