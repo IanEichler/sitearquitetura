@@ -789,6 +789,10 @@ button:focus, .btn:focus {
 .ebook-cover-free { background: linear-gradient(160deg, var(--blue-l), var(--navy)); }
 .ebook-cover-paid { background: linear-gradient(160deg, var(--navy), var(--navy-deep)); border: 1px solid var(--gold); }
 
+.ebook-cover-img { padding: 0; }
+.ebook-cover-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ebook-cover-img .ebook-cover-tag { position: absolute; top: 14px; left: 14px; z-index: 1; }
+
 .ebook-cover-tag {
   align-self: flex-start;
   font-family: var(--fb); font-size: 10px; font-weight: 600;
@@ -819,6 +823,7 @@ button:focus, .btn:focus {
 .ebook-info h3 { font-family: var(--fd); font-weight: 600; font-size: 22px; color: var(--navy); margin-bottom: 12px; letter-spacing: -.02em; }
 .ebook-info p { font-size: 14px; font-weight: 300; color: var(--g600); line-height: 1.75; margin-bottom: 24px; }
 .ebook-info .btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; }
+.ebook-info .btn:disabled { opacity: .5; cursor: default; pointer-events: none; }
 
 /* ─────────────── CONTATO ─────────────── */
 #contato {
