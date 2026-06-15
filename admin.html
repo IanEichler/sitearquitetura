@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bianca Viana | Editar Links</title>
+  <title>Bianca Viana | Painel de Edição</title>
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="theme-color" content="#0A2540" />
+  <meta name="theme-color" content="#121212" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="/src/style.css" />
   <link rel="stylesheet" href="/src/admin.css" />
@@ -24,7 +24,7 @@
           <rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
         </svg>
       </div>
-      <h1>Editar Links</h1>
+      <h1>Painel de Edição</h1>
       <p>Digite a senha para acessar o painel</p>
       <form id="loginForm">
         <input type="password" id="adminPassword" placeholder="Senha" autocomplete="current-password" />
@@ -35,52 +35,236 @@
   </div>
 
   <!-- ── EDITOR ── -->
-  <div class="admin-editor hidden" id="adminEditor">
-    <div class="admin-header">
-      <h1>Editar página de links</h1>
-      <div class="admin-header-actions">
-        <a href="/links.html" target="_blank" class="btn btn-outline">Ver página</a>
-        <button id="logoutBtn" class="btn btn-ghost">Sair</button>
+  <div class="admin-app hidden" id="adminEditor">
+    <div class="admin-sidebar-overlay" id="sidebarOverlay"></div>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="admin-brand">
+        <span class="admin-brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+          </svg>
+        </span>
+        <span class="admin-brand-name">Bianca Viana</span>
+      </div>
+
+      <nav class="admin-nav">
+        <button type="button" class="admin-nav-item active" data-panel="dashboard">
+          <i data-lucide="layout-dashboard"></i> Dashboard
+        </button>
+        <button type="button" class="admin-nav-item" data-panel="perfil">
+          <i data-lucide="user"></i> Perfil
+        </button>
+        <button type="button" class="admin-nav-item" data-panel="links">
+          <i data-lucide="link"></i> Links
+        </button>
+        <button type="button" class="admin-nav-item" data-panel="ebooks">
+          <i data-lucide="book-open"></i> E-books
+        </button>
+        <button type="button" class="admin-nav-item" data-panel="config">
+          <i data-lucide="settings"></i> Configurações
+        </button>
+      </nav>
+
+      <div class="admin-nav-foot">
+        <a href="/links.html" target="_blank" class="admin-nav-foot-link">
+          <i data-lucide="external-link"></i> Página de Links
+        </a>
+        <a href="/index.html" target="_blank" class="admin-nav-foot-link">
+          <i data-lucide="external-link"></i> Site Principal
+        </a>
+      </div>
+    </aside>
+
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <button type="button" class="admin-menu-toggle" id="sidebarToggle" aria-label="Abrir menu">
+          <i data-lucide="menu"></i>
+        </button>
+        <h1 class="admin-topbar-title" id="topbarTitle">Dashboard</h1>
+        <button type="button" class="admin-preview-toggle hidden" id="previewToggle">
+          <i data-lucide="eye"></i> Preview
+        </button>
+      </header>
+
+      <div class="admin-content">
+
+        <div class="admin-skeleton" id="adminSkeleton">
+          <div class="admin-skeleton-block" style="height:120px"></div>
+          <div class="admin-skeleton-block" style="height:280px"></div>
+          <div class="admin-skeleton-block" style="height:180px"></div>
+        </div>
+
+        <!-- DASHBOARD -->
+        <section class="admin-panel active" data-panel="dashboard">
+          <div class="admin-stats-grid">
+            <div class="admin-stat-card">
+              <div class="admin-stat-icon"><i data-lucide="link"></i></div>
+              <div class="admin-stat-value" id="statLinks">0</div>
+              <div class="admin-stat-label">Links cadastrados</div>
+            </div>
+            <div class="admin-stat-card">
+              <div class="admin-stat-icon"><i data-lucide="book-open"></i></div>
+              <div class="admin-stat-value" id="statEbooks">0</div>
+              <div class="admin-stat-label">E-books cadastrados</div>
+            </div>
+            <a href="/links.html" target="_blank" class="admin-stat-card admin-stat-card-link">
+              <div class="admin-stat-icon"><i data-lucide="external-link"></i></div>
+              <div class="admin-stat-label-lg">Ver página de links</div>
+            </a>
+            <a href="/index.html" target="_blank" class="admin-stat-card admin-stat-card-link">
+              <div class="admin-stat-icon"><i data-lucide="external-link"></i></div>
+              <div class="admin-stat-label-lg">Ver site principal</div>
+            </a>
+          </div>
+        </section>
+
+        <!-- PERFIL -->
+        <section class="admin-panel" data-panel="perfil">
+          <div class="admin-layout">
+            <div class="admin-form">
+              <div class="admin-section">
+                <h2>Perfil</h2>
+
+                <div class="admin-field">
+                  <label>Foto de perfil</label>
+                  <div class="admin-dropzone" id="avatarDropzone">
+                    <input type="file" id="profileAvatarFile" accept="image/*" hidden />
+                    <div class="admin-dropzone-empty" id="avatarDropzoneEmpty">
+                      <i data-lucide="image-plus"></i>
+                      <p>Arraste uma imagem aqui ou clique para enviar</p>
+                    </div>
+                    <div class="admin-dropzone-filled hidden" id="avatarDropzoneFilled">
+                      <img id="profileAvatarPreview" alt="" />
+                      <div class="admin-dropzone-actions">
+                        <button type="button" class="btn btn-outline" id="profileAvatarChange">Alterar</button>
+                        <button type="button" class="btn btn-ghost" id="profileAvatarRemove">Remover</button>
+                      </div>
+                    </div>
+                  </div>
+                  <input type="text" id="profileAvatar" placeholder="/eu-sou-a-bianca.jpeg ou https://..." class="admin-field-sub" />
+                </div>
+
+                <div class="admin-field">
+                  <label for="profileName">Nome</label>
+                  <input type="text" id="profileName" />
+                </div>
+                <div class="admin-field">
+                  <label for="profileSubtitle">Subtítulo (use quebras de linha para separar linhas)</label>
+                  <textarea id="profileSubtitle" rows="2"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-preview">
+              <div class="admin-preview-header">Pré-visualização — Página de Links</div>
+              <div class="admin-preview-frame-wrap">
+                <iframe src="/links.html" class="admin-preview-frame" title="Pré-visualização da página de links"></iframe>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- LINKS -->
+        <section class="admin-panel" data-panel="links">
+          <div class="admin-layout">
+            <div class="admin-form">
+              <div class="admin-section">
+                <h2>Links</h2>
+                <div id="linksEditorList"></div>
+                <button type="button" class="admin-add-link" id="addLinkBtn">+ Adicionar link</button>
+                <p class="admin-hint">
+                  Escolha o símbolo de cada link na lista. Se não encontrar o ideal, selecione
+                  "Outro (avançado)" e digite o nome de um ícone do
+                  <a href="https://lucide.dev/icons" target="_blank" rel="noopener">lucide.dev/icons</a>.
+                  Marque "Destaque" para deixar o botão em azul.<br />
+                  Para links externos, pode digitar só o endereço (ex.: <code>youtube.com</code>) —
+                  o "https://" é adicionado automaticamente. Para links internos do site, use
+                  <code>/index.html#secao</code>. Arraste pelo ícone <i data-lucide="grip-vertical"></i> para reordenar.
+                </p>
+              </div>
+            </div>
+
+            <div class="admin-preview">
+              <div class="admin-preview-header">Pré-visualização — Página de Links</div>
+              <div class="admin-preview-frame-wrap">
+                <iframe src="/links.html" class="admin-preview-frame" title="Pré-visualização da página de links"></iframe>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- E-BOOKS -->
+        <section class="admin-panel" data-panel="ebooks">
+          <div class="admin-layout">
+            <div class="admin-form">
+              <div class="admin-section">
+                <h2>E-books</h2>
+                <div id="ebooksEditorList"></div>
+                <button type="button" class="admin-add-link" id="addEbookBtn">+ Adicionar e-book</button>
+                <p class="admin-hint">
+                  Escolha "Gratuito", "Pago" ou "Em breve". Para "Em breve" você pode deixar
+                  título, capa e link em branco. A capa pode ser enviada como imagem ou
+                  informada como caminho/link. O link de download pode ser um caminho de
+                  arquivo (ex.: <code>/ebooks/meu-ebook.pdf</code> — coloque o arquivo na pasta
+                  <code>public/</code>) ou um link completo (https://...). Para e-books
+                  gratuitos, também é possível enviar o PDF diretamente. O campo "Preço" só
+                  aparece nos e-books pagos. Evite arquivos muito grandes (acima de 1–2MB),
+                  pois eles são salvos junto com os outros dados.
+                </p>
+              </div>
+            </div>
+
+            <div class="admin-preview">
+              <div class="admin-preview-header">Pré-visualização — Site Principal</div>
+              <div class="admin-preview-frame-wrap">
+                <iframe src="/index.html#ebooks" class="admin-preview-frame" title="Pré-visualização da seção de e-books"></iframe>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CONFIGURAÇÕES -->
+        <section class="admin-panel" data-panel="config">
+          <div class="admin-section">
+            <h2>Configurações</h2>
+            <div class="admin-config-row">
+              <div class="admin-config-text">
+                <strong>Restaurar padrão</strong>
+                <p>Restaura os links, e-books e perfil para os valores originais. As alterações salvas serão perdidas.</p>
+              </div>
+              <button type="button" class="btn btn-outline" id="resetBtn">Restaurar padrão</button>
+            </div>
+            <div class="admin-config-row">
+              <div class="admin-config-text">
+                <strong>Sair</strong>
+                <p>Encerra a sessão do painel neste navegador.</p>
+              </div>
+              <button type="button" class="btn btn-ghost" id="logoutBtn">Sair</button>
+            </div>
+          </div>
+        </section>
+
       </div>
     </div>
 
-    <section class="admin-section">
-      <h2>Perfil</h2>
-      <div class="admin-field">
-        <label for="profileName">Nome</label>
-        <input type="text" id="profileName" />
-      </div>
-      <div class="admin-field">
-        <label for="profileSubtitle">Subtítulo (use quebras de linha para separar linhas)</label>
-        <textarea id="profileSubtitle" rows="2"></textarea>
-      </div>
-      <div class="admin-field">
-        <label for="profileAvatar">Foto de perfil (caminho ou URL da imagem)</label>
-        <input type="text" id="profileAvatar" />
-      </div>
-    </section>
-
-    <section class="admin-section">
-      <h2>Links</h2>
-      <div id="linksEditorList"></div>
-      <button type="button" class="admin-add-link" id="addLinkBtn">+ Adicionar link</button>
-      <p class="admin-hint">
-        Escolha o símbolo de cada link na lista. Se não encontrar o ideal, selecione
-        "Outro (avançado)" e digite o nome de um ícone do
-        <a href="https://lucide.dev/icons" target="_blank" rel="noopener">lucide.dev/icons</a>.
-        Marque "Destaque" para deixar o botão em azul.<br />
-        Para links externos, pode digitar só o endereço (ex.: <code>youtube.com</code>) —
-        o "https://" é adicionado automaticamente. Para links internos do site, use
-        <code>/index.html#secao</code>.
-      </p>
-    </section>
-
-    <div class="admin-save-bar">
+    <div class="admin-savebar">
+      <span class="admin-savebar-status" id="savebarStatus">Tudo salvo</span>
       <button type="button" class="btn btn-primary" id="saveBtn">Salvar alterações</button>
-      <button type="button" class="btn btn-ghost" id="resetBtn">Restaurar padrão</button>
-      <span class="admin-save-status" id="saveStatus">Alterações salvas!</span>
     </div>
   </div>
+
+  <!-- PREVIEW MODAL (mobile) -->
+  <div class="admin-preview-modal hidden" id="previewModal">
+    <div class="admin-preview-modal-bar">
+      <span>Pré-visualização</span>
+      <button type="button" id="previewModalClose" aria-label="Fechar"><i data-lucide="x"></i></button>
+    </div>
+    <iframe id="previewModalFrame" class="admin-preview-frame" title="Pré-visualização"></iframe>
+  </div>
+
+  <!-- TOASTS -->
+  <div class="admin-toasts" id="adminToasts"></div>
 
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script type="module" src="/src/admin.js"></script>

@@ -77,7 +77,6 @@
         <li><a href="#sobre">Sobre</a></li>
         <li><a href="#servicos">Áreas de Atuação</a></li>
         <li><a href="#processo">Como Funciona</a></li>
-        <li><a href="#portfolio">FAQ</a></li>
         <li><a href="#ebooks">E-books</a></li>
         <li><a href="#contato">Contato</a></li>
       </ul>
@@ -94,7 +93,6 @@
       <li><a href="#sobre"     class="mobile-link">Sobre</a></li>
       <li><a href="#servicos"  class="mobile-link">Áreas de Atuação</a></li>
       <li><a href="#processo"  class="mobile-link">Como Funciona</a></li>
-      <li><a href="#portfolio" class="mobile-link">FAQ</a></li>
       <li><a href="#ebooks"    class="mobile-link">E-books</a></li>
       <li><a href="#contato"   class="mobile-link">Contato</a></li>
       <li><button class="btn btn-primary mobile-link" data-modal="orcamento">Agende sua Consulta</button></li>
@@ -218,14 +216,14 @@
       <div class="sobre-media reveal reveal-delay-1">
         <div class="sobre-img-wrap">
           <img
-            src="/eu-sou-a-bianca.png"
+            src="/eu-sou-a-bianca.jpeg"
             alt="Atendimento humanizado — Bianca Viana Advocacia"
             loading="lazy"
           />
         </div>
         <div class="sobre-float-card">
-          <span class="float-num">100%</span>
-          <span class="float-label">atendimento online</span>
+          <span class="float-num">OAB 29.110/O</span>
+          <span class="float-label">Registro profissional</span>
         </div>
       </div>
 
@@ -248,196 +246,110 @@
         </p>
       </div>
 
-      <div class="services-grid">
+      <div class="services-carousel reveal">
+        <button type="button" class="services-arrow services-prev" id="servicesPrev" aria-label="Área de atuação anterior">
+          <i data-lucide="chevron-left"></i>
+        </button>
 
-        <div class="service-card reveal">
-          <img src="https://images.unsplash.com/photo-1474418397713-7ede21d49118?w=700&q=80" alt="Divórcio e Dissolução de União Estável" loading="lazy" />
-          <div class="service-card-body">
-            <span class="svc-num">01</span>
-            <div class="svc-icon"><i data-lucide="heart-crack"></i></div>
-            <h3>Divórcio e Dissolução de União Estável</h3>
-            <p>Orientação completa para separações e dissoluções de união estável, com foco em diálogo e resolução respeitosa</p>
+        <div class="services-viewport">
+          <div class="services-track" id="servicesTrack">
+
+            <div class="service-card">
+              <h3>Guarda</h3>
+              <p>Definição judicial sobre com quem a criança residirá e como serão tomadas as decisões importantes relacionadas à sua vida e bem-estar.</p>
+            </div>
+
+            <div class="service-card">
+              <h3>Revisão de Guarda</h3>
+              <p>Medida utilizada quando a guarda existente não atende mais às necessidades da criança ou quando houve mudança significativa na realidade da família.</p>
+            </div>
+
+            <div class="service-card">
+              <h3>Pensão Alimentícia</h3>
+              <p>Ação destinada a garantir o sustento da criança, abrangendo despesas essenciais como alimentação, moradia, saúde, educação, lazer e desenvolvimento.</p>
+            </div>
+
+            <div class="service-card">
+              <h3>Revisional de Alimentos</h3>
+              <p>Procedimento para aumentar, reduzir ou adequar o valor da pensão alimentícia diante de mudanças na necessidade da criança ou na condição financeira dos pais.</p>
+            </div>
+
+            <div class="service-card">
+              <h3>Regularização de Visitas</h3>
+              <p>Definição judicial da convivência entre a criança e o genitor, estabelecendo dias, horários e condições para um convívio saudável e seguro.</p>
+            </div>
+
+            <div class="service-card">
+              <h3>Revisão de Visitas</h3>
+              <p>Adequação do regime de convivência quando o modelo atual deixa de atender ao melhor interesse da criança ou às novas circunstâncias familiares.</p>
+            </div>
+
+            <div class="service-card">
+              <h3>Investigação de Paternidade e Estabelecimento de Pensão Alimentícia</h3>
+              <p>Ação destinada ao reconhecimento da paternidade e à garantia dos direitos da criança, incluindo o recebimento de pensão alimentícia.</p>
+            </div>
+
+            <div class="service-card">
+              <h3>Medidas Protetivas</h3>
+              <p>Atuação jurídica para solicitar, acompanhar ou revisar medidas de proteção em casos de violência doméstica e familiar contra a mulher.</p>
+            </div>
+
+            <div class="service-card">
+              <h3>Reconhecimento e Dissolução de União Estável</h3>
+              <p>Regularização jurídica da união estável e definição de direitos relacionados à partilha de bens, pensão e demais questões decorrentes do relacionamento.</p>
+            </div>
+
+            <div class="service-card">
+              <h3>Divórcio</h3>
+              <p>Atuação em divórcios consensuais ou litigiosos, buscando segurança jurídica para questões patrimoniais, familiares e relacionadas aos filhos.</p>
+            </div>
+
+            <div class="service-card">
+              <h3>Cumprimento de Sentença (Execução de Pensão e Execução de Visitas)</h3>
+              <p>Medidas judiciais para exigir o cumprimento de decisões já proferidas, seja para cobrança de pensão alimentícia ou para garantir o exercício da convivência determinada judicialmente.</p>
+            </div>
+
+            <div class="service-card">
+              <h3>Suprimento Judicial para Autorização de Viagem Internacional ou Mudança de Cidade/Estado/País de Menor</h3>
+              <p>Pedido judicial utilizado quando um dos responsáveis se recusa injustificadamente a autorizar viagem ou mudança necessária para a criança.</p>
+            </div>
+
+            <div class="service-card">
+              <h3>Defesa em Incidente de Alienação Parental</h3>
+              <p>Atuação na defesa dos direitos da criança e do genitor diante de acusações de alienação parental ou situações que possam prejudicar o vínculo familiar.</p>
+            </div>
+
+            <div class="service-card">
+              <h3>Alimentos Gravídicos</h3>
+              <p>Pedido de auxílio financeiro durante a gestação para custear despesas relacionadas à gravidez, garantindo proteção à mãe e ao bebê.</p>
+            </div>
+
+            <div class="service-card">
+              <h3>Alimentos para Ex-cônjuge</h3>
+              <p>Ação destinada à fixação de pensão entre ex-companheiros ou ex-cônjuges quando presentes os requisitos legais para essa assistência.</p>
+            </div>
+
+            <div class="service-card">
+              <h3>Assistente de Acusação em Ações Penais e Acompanhamento de Inquéritos de Violência Doméstica</h3>
+              <p>Representação da vítima para acompanhar investigações e processos criminais, buscando uma atuação mais ativa na defesa de seus direitos e interesses.</p>
+            </div>
+
           </div>
         </div>
 
-        <div class="service-card reveal reveal-delay-1">
-          <img src="https://images.unsplash.com/photo-1476234251651-f353703a034d?w=700&q=80" alt="Guarda, Convivência e Pensão Alimentícia" loading="lazy" />
-          <div class="service-card-body">
-            <span class="svc-num">02</span>
-            <div class="svc-icon"><i data-lucide="users"></i></div>
-            <h3>Guarda, Convivência e Pensão Alimentícia</h3>
-            <p>Definição de guarda, convivência e pensão alimentícia priorizando o bem-estar de crianças e adolescentes</p>
-          </div>
-        </div>
-
-        <div class="service-card reveal reveal-delay-2">
-          <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=700&q=80" alt="Inventário e Partilha de Bens" loading="lazy" />
-          <div class="service-card-body">
-            <span class="svc-num">03</span>
-            <div class="svc-icon"><i data-lucide="scroll-text"></i></div>
-            <h3>Inventário e Partilha de Bens</h3>
-            <p>Condução de inventários judiciais e extrajudiciais, com organização e clareza na partilha de bens</p>
-          </div>
-        </div>
-
-        <div class="service-card reveal reveal-delay-1">
-          <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=700&q=80" alt="Testamento e Planejamento Sucessório" loading="lazy" />
-          <div class="service-card-body">
-            <span class="svc-num">04</span>
-            <div class="svc-icon"><i data-lucide="book-open"></i></div>
-            <h3>Testamento e Planejamento Sucessório</h3>
-            <p>Planejamento sucessório e elaboração de testamento, antecipando decisões importantes para a família</p>
-          </div>
-        </div>
-
-        <div class="service-card reveal reveal-delay-2">
-          <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=700&q=80" alt="Pactos Antenupciais e Regime de Bens" loading="lazy" />
-          <div class="service-card-body">
-            <span class="svc-num">05</span>
-            <div class="svc-icon"><i data-lucide="file-signature"></i></div>
-            <h3>Pactos Antenupciais e Regime de Bens</h3>
-            <p>Elaboração de pactos antenupciais e definição do regime de bens mais adequado para o casal</p>
-          </div>
-        </div>
-
-        <div class="service-card reveal reveal-delay-3">
-          <img src="https://images.unsplash.com/photo-1492725764893-90b379c2b6e7?w=700&q=80" alt="Reconhecimento de União Estável e Paternidade" loading="lazy" />
-          <div class="service-card-body">
-            <span class="svc-num">06</span>
-            <div class="svc-icon"><i data-lucide="user-check"></i></div>
-            <h3>Reconhecimento de União Estável e Paternidade</h3>
-            <p>Reconhecimento de união estável e de paternidade, com toda a orientação documental necessária</p>
-          </div>
-        </div>
-
+        <button type="button" class="services-arrow services-next" id="servicesNext" aria-label="Próxima área de atuação">
+          <i data-lucide="chevron-right"></i>
+        </button>
       </div>
+
+      <p class="servicos-phrase reveal">
+        Quando uma mulher procura orientação jurídica, raramente busca apenas uma resposta legal. Ela busca segurança para reescrever sua história, proteger quem ama e seguir adiante com mais tranquilidade e confiança. E é isso, que queremos: <em>que você possa maternar em paz.</em>
+      </p>
 
       <div class="servicos-cta reveal">
-        <p>Não encontrou exatamente o que precisa?</p>
-        <a href="https://wa.me/55XXXXXXXXXXX?text=Ol%C3%A1%2C%20Bianca%20Viana!%20Vim%20pelo%20site%20e%20gostaria%20de%20saber%20mais%20sobre%20uma%20%C3%A1rea%20de%20atua%C3%A7%C3%A3o." target="_blank" rel="noopener" class="btn btn-whatsapp">
+        <a href="https://wa.me/55XXXXXXXXXXX?text=Ol%C3%A1%2C%20Bianca%20Viana!%20Vim%20pelo%20site%20e%20gostaria%20de%20iniciar%20um%20atendimento." target="_blank" rel="noopener" class="btn btn-whatsapp">
           <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/><path d="M12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0012.05 0z" fill-rule="evenodd"/></svg>
-          Falar no WhatsApp
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── FAQ ── -->
-  <section id="portfolio">
-    <div class="container">
-      <div class="section-header reveal">
-        <div>
-          <div class="section-badge">
-            <span>PERGUNTAS FREQUENTES</span>
-          </div>
-          <h2 class="section-title">Tire suas<br /><em>dúvidas</em></h2>
-        </div>
-        <div class="portfolio-filters">
-          <button class="filter-btn active" data-filter="all">Todas</button>
-          <button class="filter-btn" data-filter="online">Atendimento Online</button>
-          <button class="filter-btn" data-filter="sigilo">Sigilo</button>
-          <button class="filter-btn" data-filter="processo">Processo</button>
-          <button class="filter-btn" data-filter="pagamento">Pagamento</button>
-        </div>
-      </div>
-
-      <div class="faq-list">
-        <div class="faq-item active reveal" data-category="online">
-          <button class="faq-question">
-            <div class="faq-q-text">
-              <span class="faq-tag">Atendimento Online</span>
-              <h3>Como funciona a consulta online?</h3>
-            </div>
-            <i data-lucide="plus" class="faq-icon"></i>
-          </button>
-          <div class="faq-answer">
-            <p>Após o primeiro contato, agendamos uma videochamada em horário combinado. Nela você apresenta sua situação e recebe uma orientação inicial sobre os próximos passos.</p>
-          </div>
-        </div>
-
-        <div class="faq-item reveal" data-category="online">
-          <button class="faq-question">
-            <div class="faq-q-text">
-              <span class="faq-tag">Atendimento Online</span>
-              <h3>Atende minha cidade?</h3>
-            </div>
-            <i data-lucide="plus" class="faq-icon"></i>
-          </button>
-          <div class="faq-answer">
-            <p>Sim. Todo o atendimento é feito por videochamada, então você pode estar em qualquer cidade ou estado do Brasil — não é necessário deslocamento.</p>
-          </div>
-        </div>
-
-        <div class="faq-item reveal" data-category="sigilo">
-          <button class="faq-question">
-            <div class="faq-q-text">
-              <span class="faq-tag">Sigilo</span>
-              <h3>As informações que eu compartilhar ficam em sigilo?</h3>
-            </div>
-            <i data-lucide="plus" class="faq-icon"></i>
-          </button>
-          <div class="faq-answer">
-            <p>Sim. Todo o conteúdo é tratado com sigilo profissional, conforme o Código de Ética da OAB, do primeiro contato ao encerramento do caso.</p>
-          </div>
-        </div>
-
-        <div class="faq-item reveal" data-category="processo">
-          <button class="faq-question">
-            <div class="faq-q-text">
-              <span class="faq-tag">Processo</span>
-              <h3>Como agendar uma consulta?</h3>
-            </div>
-            <i data-lucide="plus" class="faq-icon"></i>
-          </button>
-          <div class="faq-answer">
-            <p>Basta enviar uma mensagem pelo WhatsApp contando brevemente a sua situação. Você recebe um retorno com as opções de horário disponíveis para a consulta inicial.</p>
-          </div>
-        </div>
-
-        <div class="faq-item reveal" data-category="processo">
-          <button class="faq-question">
-            <div class="faq-q-text">
-              <span class="faq-tag">Processo</span>
-              <h3>Quais documentos preciso reunir para a primeira consulta?</h3>
-            </div>
-            <i data-lucide="plus" class="faq-icon"></i>
-          </button>
-          <div class="faq-answer">
-            <p>Isso varia de acordo com o seu caso. Na primeira conversa você recebe uma orientação personalizada sobre os documentos necessários.</p>
-          </div>
-        </div>
-
-        <div class="faq-item reveal" data-category="pagamento">
-          <button class="faq-question">
-            <div class="faq-q-text">
-              <span class="faq-tag">Pagamento</span>
-              <h3>Como funciona o pagamento?</h3>
-            </div>
-            <i data-lucide="plus" class="faq-icon"></i>
-          </button>
-          <div class="faq-answer">
-            <p>As condições são combinadas individualmente após a consulta inicial, de acordo com a complexidade do caso.</p>
-          </div>
-        </div>
-
-        <div class="faq-item reveal" data-category="online">
-          <button class="faq-question">
-            <div class="faq-q-text">
-              <span class="faq-tag">Atendimento Online</span>
-              <h3>Posso resolver meu caso mesmo morando em outro estado?</h3>
-            </div>
-            <i data-lucide="plus" class="faq-icon"></i>
-          </button>
-          <div class="faq-answer">
-            <p>Sim. O atendimento 100% online permite acompanhar todo o processo à distância, com comunicação direta e contínua durante cada etapa.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="pf-cta reveal">
-        <a href="https://wa.me/55XXXXXXXXXXX?text=Ol%C3%A1%2C%20Bianca%20Viana!%20Ainda%20tenho%20uma%20d%C3%BAvida." target="_blank" rel="noopener" class="btn btn-whatsapp">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/><path d="M12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0012.05 0z" fill-rule="evenodd"/></svg>
-          Ainda tem dúvidas? Fale no WhatsApp
+          Iniciar atendimento agora
         </a>
       </div>
     </div>
@@ -614,42 +526,7 @@
         </p>
       </div>
 
-      <div class="ebooks-grid">
-
-        <div class="ebook-card reveal">
-          <div class="ebook-cover ebook-cover-free ebook-cover-img">
-            <img src="/ebook-mae-capa.jpg" alt="Capa do e-book: O que toda mãe precisa saber, de Bianca Viana" loading="lazy" />
-            <span class="ebook-cover-tag">E-book Gratuito</span>
-          </div>
-          <div class="ebook-info">
-            <span class="ebook-price ebook-price-free">Gratuito</span>
-            <h3>O Que Toda Mãe Precisa Saber</h3>
-            <p>Um guia para mães que querem entender melhor seus direitos sobre pensão alimentícia, guarda e convivência, com orientações práticas para decidir com mais segurança jurídica.</p>
-            <a href="/ebooks/o-que-toda-mae-precisa-saber.pdf" download="O-que-toda-mae-precisa-saber-Bianca-Viana.pdf" class="btn btn-primary btn-full">
-              <i data-lucide="download"></i> Baixar e-book gratuito
-            </a>
-          </div>
-        </div>
-
-        <div class="ebook-card reveal reveal-delay-1">
-          <div class="ebook-cover ebook-cover-paid">
-            <span class="ebook-cover-tag">Em breve</span>
-            <div class="ebook-cover-icon"><i data-lucide="clock"></i></div>
-            <div class="ebook-cover-body">
-              <span class="ebook-cover-author">Bianca Viana</span>
-            </div>
-          </div>
-          <div class="ebook-info">
-            <span class="ebook-price">Em breve</span>
-            <h3>Em breve</h3>
-            <p>Um novo material está em preparação. Em breve você encontrará aqui mais conteúdo para te ajudar a entender seus direitos.</p>
-            <button type="button" class="btn btn-outline btn-full" disabled>
-              <i data-lucide="clock"></i> Disponível em breve
-            </button>
-          </div>
-        </div>
-
-      </div>
+      <div class="ebooks-grid" id="ebooksGrid"></div>
     </div>
   </section>
 
@@ -700,7 +577,6 @@
           <li><a href="#sobre">Sobre</a></li>
           <li><a href="#servicos">Áreas de Atuação</a></li>
           <li><a href="#processo">Como Funciona</a></li>
-          <li><a href="#portfolio">FAQ</a></li>
           <li><a href="#ebooks">E-books</a></li>
           <li><a href="#contato">Contato</a></li>
         </ul>
@@ -739,5 +615,7 @@
   </a>
 
   <script type="module" src="/src/main.js"></script>
+  <script type="module" src="/src/ebooks.js"></script>
+  <script type="module" src="/src/services.js"></script>
 </body>
 </html>

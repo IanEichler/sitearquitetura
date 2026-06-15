@@ -1,4 +1,4 @@
-import { loadData } from './links-data.js'
+import { loadData, STORAGE_KEY } from './links-data.js'
 
 function escapeHtml(str) {
   const div = document.createElement('div')
@@ -50,3 +50,9 @@ function render() {
 document.readyState === 'loading'
   ? document.addEventListener('DOMContentLoaded', render)
   : render()
+
+/* Permite que o painel admin atualize esta página em tempo real
+   (ex.: dentro de um iframe de pré-visualização) quando os dados mudam. */
+window.addEventListener('storage', (e) => {
+  if (e.key === STORAGE_KEY) render()
+})

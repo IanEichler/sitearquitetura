@@ -96,31 +96,6 @@ if (processFill) {
   })
 }
 
-/* ─── FAQ: FILTROS ─── */
-const filterBtns = document.querySelectorAll('.filter-btn')
-const faqItems   = document.querySelectorAll('.faq-item')
-
-filterBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    filterBtns.forEach(b => b.classList.remove('active'))
-    btn.classList.add('active')
-    const filter = btn.dataset.filter
-    faqItems.forEach(item => {
-      const match = filter === 'all' || item.dataset.category === filter
-      item.classList.toggle('hidden', !match)
-    })
-  })
-})
-
-/* ─── FAQ: ACCORDION ─── */
-faqItems.forEach(item => {
-  item.querySelector('.faq-question')?.addEventListener('click', () => {
-    const wasActive = item.classList.contains('active')
-    faqItems.forEach(i => i.classList.remove('active'))
-    if (!wasActive) item.classList.add('active')
-  })
-})
-
 /* ─── SMOOTH ANCHOR LINKS ─── */
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', (e) => {

@@ -29,7 +29,7 @@ export const iconOptions = [
 export const defaultProfile = {
   name: 'Bianca Viana',
   subtitle: 'Advocacia de Família e Sucessões\nAtendimento 100% Online · Todo o Brasil',
-  avatar: '/eu-sou-a-bianca.png',
+  avatar: '/eu-sou-a-bianca.jpeg',
 }
 
 export const defaultLinks = [
