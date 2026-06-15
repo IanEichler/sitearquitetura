@@ -1,7 +1,7 @@
 {
   "name": "site-arquitetura",
   "version": "1.0.0",
-  "description": "Albaces Arquitetura — site institucional",
+  "description": "Bianca Viana Advocacia — site institucional",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

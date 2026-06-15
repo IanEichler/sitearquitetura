@@ -1,12 +1,12 @@
-const WA_NUMBER = '5566999731937'
+const WA_NUMBER = '55XXXXXXXXXXX'
 
 const SERVICES = [
-  'Projeto Residencial',
-  'Projeto Comercial',
-  'Design de Interiores',
-  'Renderização 3D',
-  'Reforma e Retrofit',
-  'Consultoria',
+  'Divórcio e Dissolução de União Estável',
+  'Guarda, Convivência e Pensão Alimentícia',
+  'Inventário e Partilha de Bens',
+  'Testamento e Planejamento Sucessório',
+  'Pactos Antenupciais e Regime de Bens',
+  'Reconhecimento de União Estável e Paternidade',
 ]
 
 const STEPS = [
@@ -25,23 +25,23 @@ const STEPS = [
     question: 'Qual o seu WhatsApp?',
     type: 'input',
     inputType: 'tel',
-    placeholder: '(66) 9 9999-9999',
+    placeholder: '(XX) 9 9999-9999',
     required: true,
   },
   {
     id: 'servico',
     counter: '03 — 03',
-    question: 'O que você quer fazer?',
+    question: 'Qual área você precisa de ajuda?',
     type: 'options',
     required: true,
   },
   {
     id: 'descricao',
     counter: 'Quase lá',
-    question: 'Detalhes do projeto',
-    hint: 'Opcional — quanto mais você contar, melhor podemos ajudar.',
+    question: 'Conte brevemente sua situação',
+    hint: 'Opcional — quanto mais você contar, melhor podemos te orientar.',
     type: 'textarea',
-    placeholder: 'Ex: quero construir uma casa de 200m² com 3 quartos, piscina e área gourmet...',
+    placeholder: 'Ex: estou passando por um divórcio e preciso de orientação sobre a partilha de bens...',
     required: false,
   },
 ]
@@ -61,7 +61,7 @@ function buildDOM() {
   el.className = 'orc-modal'
   el.innerHTML = `
     <div class="orc-backdrop" id="orcBackdrop"></div>
-    <div class="orc-card" role="dialog" aria-modal="true" aria-label="Solicitar Orçamento">
+    <div class="orc-card" role="dialog" aria-modal="true" aria-label="Agendar Consulta">
       <button class="orc-close" id="orcClose" aria-label="Fechar">
         <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
@@ -225,14 +225,14 @@ function submit() {
   if (ta) state.descricao = ta.value.trim()
 
   const lines = [
-    `Olá, Albaces! Vim pelo site.`,
+    `Olá, Bianca Viana! Vim pelo site.`,
     ``,
     `*Nome:* ${state.nome}`,
     `*WhatsApp:* ${state.telefone}`,
-    `*Serviço:* ${state.servico}`,
+    `*Área de interesse:* ${state.servico}`,
   ]
   if (state.descricao) {
-    lines.push(``, `*Projeto:*`, state.descricao)
+    lines.push(``, `*Situação:*`, state.descricao)
   }
 
   const text = encodeURIComponent(lines.join('\n'))

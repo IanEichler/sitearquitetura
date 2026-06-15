@@ -30,36 +30,6 @@ lenis.on('scroll', ScrollTrigger.update)
 gsap.ticker.add((time) => lenis.raf(time * 1000))
 gsap.ticker.lagSmoothing(0)
 
-/* ─── CURSOR ─── */
-const cursor     = document.getElementById('cursor')
-const cursorRing = document.getElementById('cursor-ring')
-
-let mouseX = -100, mouseY = -100
-let ringX  = -100, ringY  = -100
-
-document.addEventListener('mousemove', (e) => {
-  mouseX = e.clientX
-  mouseY = e.clientY
-})
-
-function animateCursor() {
-  ringX += (mouseX - ringX) * 0.12
-  ringY += (mouseY - ringY) * 0.12
-
-  cursor.style.left     = mouseX + 'px'
-  cursor.style.top      = mouseY + 'px'
-  cursorRing.style.left = ringX  + 'px'
-  cursorRing.style.top  = ringY  + 'px'
-
-  requestAnimationFrame(animateCursor)
-}
-animateCursor()
-
-document.querySelectorAll('a, button, .service-card, .pf-card, .filter-btn, .testi-card, .demo-btn').forEach(el => {
-  el.addEventListener('mouseenter', () => document.body.classList.add('c-hover'))
-  el.addEventListener('mouseleave', () => document.body.classList.remove('c-hover'))
-})
-
 /* ─── NAVBAR ─── */
 const navbar = document.getElementById('navbar')
 window.addEventListener('scroll', () => {
@@ -126,19 +96,28 @@ if (processFill) {
   })
 }
 
-/* ─── PORTFÓLIO FILTROS ─── */
-const filterBtns  = document.querySelectorAll('.filter-btn')
-const pfCards     = document.querySelectorAll('.pf-card')
+/* ─── FAQ: FILTROS ─── */
+const filterBtns = document.querySelectorAll('.filter-btn')
+const faqItems   = document.querySelectorAll('.faq-item')
 
 filterBtns.forEach(btn => {
   btn.addEventListener('click', () => {
     filterBtns.forEach(b => b.classList.remove('active'))
     btn.classList.add('active')
     const filter = btn.dataset.filter
-    pfCards.forEach(card => {
-      const match = filter === 'all' || card.dataset.category === filter
-      card.classList.toggle('hidden', !match)
+    faqItems.forEach(item => {
+      const match = filter === 'all' || item.dataset.category === filter
+      item.classList.toggle('hidden', !match)
     })
+  })
+})
+
+/* ─── FAQ: ACCORDION ─── */
+faqItems.forEach(item => {
+  item.querySelector('.faq-question')?.addEventListener('click', () => {
+    const wasActive = item.classList.contains('active')
+    faqItems.forEach(i => i.classList.remove('active'))
+    if (!wasActive) item.classList.add('active')
   })
 })
 
@@ -160,18 +139,18 @@ if (form) {
     e.preventDefault()
     const data = Object.fromEntries(new FormData(form))
     const lines = [
-      `Olá, Albaces! Vim pelo site.`,
+      `Olá, Bianca Viana! Vim pelo site.`,
       ``,
       `*Nome:* ${data.nome || '-'}`,
       `*WhatsApp:* ${data.telefone || '-'}`,
       `*E-mail:* ${data.email || '-'}`,
-      `*Serviço:* ${data.servico || '-'}`,
+      `*Área de interesse:* ${data.servico || '-'}`,
     ]
     if (data.mensagem?.trim()) {
       lines.push(``, `*Mensagem:*`, data.mensagem.trim())
     }
     const text = encodeURIComponent(lines.join('\n'))
-    window.open(`https://wa.me/5566999731937?text=${text}`, '_blank')
+    window.open(`https://wa.me/55XXXXXXXXXXX?text=${text}`, '_blank')
     form.reset()
   })
 }
@@ -199,3 +178,20 @@ if (heroBg) {
     heroBg.style.transform = `translateY(${scrolled * 0.25}px)`
   }, { passive: true })
 }
+
+/* ─── COPY PHONE ─── */
+document.querySelectorAll('.copy-phone-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    navigator.clipboard.writeText(btn.dataset.copy).then(() => {
+      btn.classList.add('copied')
+      const toast = btn.nextElementSibling
+      toast?.classList.add('show')
+      window.lucide?.createIcons()
+      setTimeout(() => {
+        btn.classList.remove('copied')
+        toast?.classList.remove('show')
+        window.lucide?.createIcons()
+      }, 2000)
+    })
+  })
+})
