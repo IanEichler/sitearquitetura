@@ -1,4 +1,4 @@
-import { loadData, saveData, resetData, defaultProfile, defaultLinks } from './links-data.js'
+import { loadData, saveData, resetData, defaultProfile, defaultLinks, iconOptions } from './links-data.js'
 
 /* Senha de acesso ao painel — altere aqui se necessário */
 const ADMIN_PASSWORD = 'biancaviana2026'
@@ -59,9 +59,24 @@ function renderEditor() {
 }
 
 function renderLinksList() {
-  linksEditorList.innerHTML = state.links.map((link, i) => `
+  linksEditorList.innerHTML = state.links.map((link, i) => {
+    const isKnown = iconOptions.some(opt => opt.value === link.icon)
+    const optionsHtml = iconOptions.map(opt =>
+      `<option value="${opt.value}" ${link.icon === opt.value ? 'selected' : ''}>${opt.label}</option>`
+    ).join('')
+
+    return `
     <div class="admin-link-row" data-index="${i}">
-      <input type="text" class="al-icon" placeholder="ícone" value="${escapeAttr(link.icon)}" />
+      <div class="al-icon-cell">
+        <div class="al-icon-row">
+          <span class="al-icon-preview"><i data-lucide="${escapeAttr(isKnown ? link.icon : (link.icon || 'link'))}"></i></span>
+          <select class="al-icon">
+            ${optionsHtml}
+            <option value="__custom__" ${!isKnown ? 'selected' : ''}>Outro (avançado)</option>
+          </select>
+        </div>
+        <input type="text" class="al-icon-custom ${isKnown ? 'hidden' : ''}" placeholder="nome-do-ícone (lucide.dev/icons)" value="${escapeAttr(isKnown ? '' : link.icon)}" />
+      </div>
       <input type="text" class="al-label" placeholder="Texto do botão" value="${escapeAttr(link.label)}" />
       <input type="url" class="al-url" placeholder="https://..." value="${escapeAttr(link.url)}" />
       <label class="al-primary">
@@ -74,7 +89,10 @@ function renderLinksList() {
         <button type="button" class="al-remove" title="Remover">✕</button>
       </div>
     </div>
-  `).join('')
+  `
+  }).join('')
+
+  window.lucide?.createIcons()
 }
 
 function escapeAttr(str) {
@@ -85,13 +103,43 @@ function escapeAttr(str) {
 
 function syncLinksFromDom() {
   const rows = linksEditorList.querySelectorAll('.admin-link-row')
-  state.links = Array.from(rows).map(row => ({
-    icon: row.querySelector('.al-icon').value.trim(),
-    label: row.querySelector('.al-label').value.trim(),
-    url: row.querySelector('.al-url').value.trim(),
-    primary: row.querySelector('.al-primary-check').checked,
-  }))
+  state.links = Array.from(rows).map(row => {
+    const select = row.querySelector('.al-icon')
+    const custom = row.querySelector('.al-icon-custom')
+    const icon = select.value === '__custom__' ? custom.value.trim() : select.value
+    return {
+      icon,
+      label: row.querySelector('.al-label').value.trim(),
+      url: row.querySelector('.al-url').value.trim(),
+      primary: row.querySelector('.al-primary-check').checked,
+    }
+  })
 }
+
+function updateIconPreview(row, iconName) {
+  const preview = row.querySelector('.al-icon-preview')
+  preview.innerHTML = `<i data-lucide="${escapeAttr(iconName || 'link')}"></i>`
+  window.lucide?.createIcons()
+}
+
+linksEditorList.addEventListener('change', (e) => {
+  if (!e.target.classList.contains('al-icon')) return
+  const row = e.target.closest('.admin-link-row')
+  const customInput = row.querySelector('.al-icon-custom')
+  if (e.target.value === '__custom__') {
+    customInput.classList.remove('hidden')
+    customInput.focus()
+    updateIconPreview(row, customInput.value.trim())
+  } else {
+    customInput.classList.add('hidden')
+    updateIconPreview(row, e.target.value)
+  }
+})
+
+linksEditorList.addEventListener('input', (e) => {
+  if (!e.target.classList.contains('al-icon-custom')) return
+  updateIconPreview(e.target.closest('.admin-link-row'), e.target.value.trim())
+})
 
 linksEditorList.addEventListener('click', (e) => {
   const row = e.target.closest('.admin-link-row')

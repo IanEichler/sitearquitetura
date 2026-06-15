@@ -91,7 +91,7 @@
 /* linhas de link */
 .admin-link-row {
   display: grid;
-  grid-template-columns: 110px 1fr 1fr auto auto;
+  grid-template-columns: 200px 1fr 1fr auto auto;
   gap: 10px; align-items: center;
   padding: 12px; border: 1px solid var(--g200); border-radius: var(--rs);
   margin-bottom: 10px; background: var(--off);
@@ -102,6 +102,22 @@
   outline: none; transition: border-color var(--t);
 }
 .admin-link-row input:focus { border-color: var(--blue-l); }
+
+/* seletor de ícone */
+.al-icon-cell { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.al-icon-row { display: flex; align-items: center; gap: 8px; }
+.al-icon-preview {
+  flex-shrink: 0; width: 32px; height: 32px; border-radius: var(--rs);
+  background: var(--navy); display: flex; align-items: center; justify-content: center;
+}
+.al-icon-preview svg { width: 16px; height: 16px; stroke: var(--gold); stroke-width: 1.8; }
+select.al-icon {
+  flex: 1; min-width: 0; padding: 9px 8px; border-radius: var(--rs);
+  border: 1px solid var(--g200); font-family: var(--fb); font-size: 12px;
+  background: var(--white); color: var(--g600); outline: none;
+  transition: border-color var(--t);
+}
+select.al-icon:focus { border-color: var(--blue-l); }
 .al-primary {
   display: flex; flex-direction: column; align-items: center; gap: 4px;
   font-size: 10px; font-weight: 600; text-transform: uppercase;
@@ -155,7 +171,7 @@
       "url url"
       "controls controls";
   }
-  .admin-link-row .al-icon { grid-area: icon; }
+  .admin-link-row .al-icon-cell { grid-area: icon; }
   .admin-link-row .al-primary { grid-area: primary; flex-direction: row; justify-content: flex-end; }
   .admin-link-row .al-label { grid-area: label; }
   .admin-link-row .al-url { grid-area: url; }

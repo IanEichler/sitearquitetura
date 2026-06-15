@@ -1,5 +1,31 @@
 export const STORAGE_KEY = 'bv-links-data'
 
+/* Ícones disponíveis no painel — rótulo em português → nome do ícone (lucide.dev/icons) */
+export const iconOptions = [
+  { value: 'calendar-check', label: 'Agenda / Consulta' },
+  { value: 'message-circle', label: 'WhatsApp / Mensagem' },
+  { value: 'phone',          label: 'Telefone' },
+  { value: 'mail',           label: 'E-mail' },
+  { value: 'globe',          label: 'Site' },
+  { value: 'camera',         label: 'Instagram / Foto' },
+  { value: 'map-pin',        label: 'Localização' },
+  { value: 'scale',          label: 'Jurídico / Balança' },
+  { value: 'gavel',          label: 'Processo / Martelo' },
+  { value: 'file-text',      label: 'Documento' },
+  { value: 'book-open',      label: 'E-book / Artigo' },
+  { value: 'video',          label: 'Vídeo' },
+  { value: 'users',          label: 'Pessoas / Equipe' },
+  { value: 'briefcase',      label: 'Profissional / Maleta' },
+  { value: 'landmark',       label: 'Escritório / Instituição' },
+  { value: 'newspaper',      label: 'Notícias / Blog' },
+  { value: 'heart',          label: 'Coração' },
+  { value: 'star',           label: 'Destaque / Estrela' },
+  { value: 'badge-check',    label: 'Verificado' },
+  { value: 'share-2',        label: 'Compartilhar' },
+  { value: 'send',           label: 'Enviar' },
+  { value: 'link',           label: 'Link genérico' },
+]
+
 export const defaultProfile = {
   name: 'Bianca Viana',
   subtitle: 'Advocacia de Família e Sucessões\nAtendimento 100% Online · Todo o Brasil',
