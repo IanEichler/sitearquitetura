@@ -6,6 +6,19 @@ function escapeHtml(str) {
   return div.innerHTML
 }
 
+/* Links internos começam com "/", "#", "mailto:" ou "tel:".
+   Qualquer outra coisa (ex.: "youtube.com") é tratada como link
+   externo e recebe "https://" automaticamente se faltar o protocolo. */
+function isInternalUrl(url) {
+  return /^(\/|#|mailto:|tel:)/i.test((url ?? '').trim())
+}
+function resolveUrl(url) {
+  const trimmed = (url ?? '').trim()
+  if (!trimmed) return '#'
+  if (isInternalUrl(trimmed) || /^https?:/i.test(trimmed)) return trimmed
+  return `https://${trimmed}`
+}
+
 function render() {
   const { profile, links } = loadData()
 
@@ -20,10 +33,11 @@ function render() {
 
   const listEl = document.getElementById('linksList')
   listEl.innerHTML = links.map(link => {
-    const isExternal = /^https?:\/\//.test(link.url)
+    const href = resolveUrl(link.url)
+    const isExternal = !isInternalUrl(link.url)
     const cls = ['link-btn', link.primary ? 'link-btn-primary' : ''].filter(Boolean).join(' ')
     return `
-      <a class="${cls}" href="${escapeHtml(link.url)}" ${isExternal ? 'target="_blank" rel="noopener"' : ''}>
+      <a class="${cls}" href="${escapeHtml(href)}" ${isExternal ? 'target="_blank" rel="noopener"' : ''}>
         <span class="link-icon"><i data-lucide="${escapeHtml(link.icon)}"></i></span>
         <span class="link-label">${escapeHtml(link.label)}</span>
       </a>
