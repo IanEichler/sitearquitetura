@@ -527,7 +527,7 @@ button:focus, .btn:focus {
   line-height: 1.25; min-height: 2.5em;
   display: flex; align-items: center;
 }
-.service-card-body p { font-size: 13px; font-weight: 300; color: rgba(255,255,255,.55); line-height: 1.6; }
+.service-card-body p { font-size: 13px; font-weight: 300; color: rgba(255,255,255,.55); line-height: 1.6; min-height: 4.8em; }
 
 /* ─────────────── FAQ ─────────────── */
 #portfolio { background: var(--white); padding: 130px 0; }
