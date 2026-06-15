@@ -1,8 +1,18 @@
 import { loadData, saveData, resetData, defaultProfile, defaultLinks, iconOptions } from './links-data.js'
 
-/* Senha de acesso ao painel — altere aqui se necessário */
-const ADMIN_PASSWORD = 'biancaviana2026'
+/* Senha de acesso ao painel — não fica em texto puro no código,
+   apenas o hash (SHA-256) dela. Para trocar a senha, gere o novo
+   hash (ex.: no console do navegador):
+     crypto.subtle.digest('SHA-256', new TextEncoder().encode('NOVA_SENHA'))
+       .then(b => console.log([...new Uint8Array(b)].map(x => x.toString(16).padStart(2,'0')).join('')))
+   e substitua o valor abaixo. */
+const ADMIN_PASSWORD_HASH = '066c28b1fb6067337ba74be3cff1dc3b7c50fea80ec958673fe68f8113ab6c97'
 const AUTH_KEY = 'bv-admin-auth'
+
+async function hashPassword(text) {
+  const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text))
+  return [...new Uint8Array(buffer)].map(b => b.toString(16).padStart(2, '0')).join('')
+}
 
 const loginScreen  = document.getElementById('adminLogin')
 const editorScreen = document.getElementById('adminEditor')
@@ -35,9 +45,10 @@ function showLogin() {
   passwordInput.focus()
 }
 
-loginForm.addEventListener('submit', (e) => {
+loginForm.addEventListener('submit', async (e) => {
   e.preventDefault()
-  if (passwordInput.value === ADMIN_PASSWORD) {
+  const hash = await hashPassword(passwordInput.value)
+  if (hash === ADMIN_PASSWORD_HASH) {
     sessionStorage.setItem(AUTH_KEY, '1')
     loginError.classList.add('hidden')
     showEditor()
