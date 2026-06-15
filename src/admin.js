@@ -78,7 +78,7 @@ function renderLinksList() {
         <input type="text" class="al-icon-custom ${isKnown ? 'hidden' : ''}" placeholder="nome-do-ícone (lucide.dev/icons)" value="${escapeAttr(isKnown ? '' : link.icon)}" />
       </div>
       <input type="text" class="al-label" placeholder="Texto do botão" value="${escapeAttr(link.label)}" />
-      <input type="url" class="al-url" placeholder="https://..." value="${escapeAttr(link.url)}" />
+      <input type="text" class="al-url" placeholder="https://... ou /index.html#secao" value="${escapeAttr(link.url)}" />
       <label class="al-primary">
         <input type="checkbox" class="al-primary-check" ${link.primary ? 'checked' : ''} />
         Destaque
