@@ -96,6 +96,26 @@ if (processFill) {
   })
 }
 
+/* ─── PROCESSO: animação automática bolina a bolina ─── */
+;(function initProcessAnim() {
+  const circles = Array.from(document.querySelectorAll('.process-step .step-circle'))
+  if (!circles.length) return
+  let current = 0
+
+  function advance() {
+    circles[current].classList.remove('active')
+    current = (current + 1) % circles.length
+    circles[current].classList.add('active')
+  }
+
+  circles[0].classList.add('active')
+  setInterval(advance, 2000)
+})()
+
+/* ─── ANO DINÂMICO NO RODAPÉ ─── */
+const footerYear = document.getElementById('footerYear')
+if (footerYear) footerYear.textContent = new Date().getFullYear()
+
 /* ─── SMOOTH ANCHOR LINKS ─── */
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', (e) => {

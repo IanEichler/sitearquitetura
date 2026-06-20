@@ -1,4 +1,4 @@
-const WA_NUMBER = '55XXXXXXXXXXX'
+const WA_NUMBER = '5566996781296'
 
 const SERVICES = [
   'Divórcio e Dissolução de União Estável',

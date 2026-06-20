@@ -36,7 +36,7 @@ export const defaultLinks = [
   {
     icon: 'calendar-check',
     label: 'Agende sua Consulta',
-    url: 'https://wa.me/55XXXXXXXXXXX?text=Ol%C3%A1%2C%20Bianca%20Viana!%20Vim%20pelo%20link%20da%20bio%20e%20gostaria%20de%20agendar%20uma%20consulta.',
+    url: 'https://wa.me/5566996781296?text=Ol%C3%A1%2C%20Bianca%20Viana!%20Vim%20pelo%20link%20da%20bio%20e%20gostaria%20de%20agendar%20uma%20consulta.',
     primary: true,
   },
   { icon: 'globe', label: 'Site Oficial', url: '/index.html', primary: false },
@@ -51,7 +51,12 @@ export function loadData() {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
       const parsed = JSON.parse(raw)
-      if (parsed && parsed.profile && Array.isArray(parsed.links)) return parsed
+      if (parsed && parsed.profile && Array.isArray(parsed.links)) {
+        if (parsed.profile.avatar === '/eu-sou-a-bianca.png') {
+          parsed.profile.avatar = '/eu-sou-a-bianca.jpeg'
+        }
+        return parsed
+      }
     }
   } catch {}
   return {

@@ -17,10 +17,6 @@ if (track && prevBtn && nextBtn) {
   // assim os textos ficam alinhados e os quadros não mudam de tamanho ao navegar
   function syncSizes() {
     cards.forEach(c => { c.style.height = 'auto' })
-    titles.forEach(t => { t.style.height = 'auto' })
-
-    const maxTitleHeight = Math.max(...titles.map(t => t.getBoundingClientRect().height))
-    titles.forEach(t => { t.style.height = `${maxTitleHeight}px` })
 
     const maxCardHeight = Math.max(...cards.map(c => c.getBoundingClientRect().height))
     cards.forEach(c => { c.style.height = `${maxCardHeight}px` })
@@ -49,4 +45,6 @@ if (track && prevBtn && nextBtn) {
   nextBtn.addEventListener('click', () => go(1))
   window.addEventListener('resize', update)
   update()
+
+  setInterval(() => go(1), 5000)
 }

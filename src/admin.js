@@ -291,12 +291,148 @@ function updateAvatarDropzone(value) {
   }
 }
 
+/* ─── CROP MODAL ─── */
+const cropModal = (() => {
+  const el = document.createElement('div')
+  el.className = 'adm-crop-modal'
+  el.innerHTML = `
+    <div class="adm-crop-box">
+      <p class="adm-crop-title">Ajustar imagem</p>
+      <div class="adm-crop-stage" id="admCropStage">
+        <img id="admCropImg" alt="" />
+        <div class="adm-crop-overlay" id="admCropOverlay"></div>
+      </div>
+      <div class="adm-crop-zoom">
+        <label>Zoom</label>
+        <input type="range" id="admCropZoom" min="100" max="400" value="100" step="1" />
+      </div>
+      <div class="adm-crop-actions">
+        <button class="adm-crop-cancel" id="admCropCancel">Cancelar</button>
+        <button class="adm-crop-confirm" id="admCropConfirm">Aplicar</button>
+      </div>
+    </div>
+  `
+  document.body.appendChild(el)
+
+  const stage    = el.querySelector('#admCropStage')
+  const img      = el.querySelector('#admCropImg')
+  const overlay  = el.querySelector('#admCropOverlay')
+  const zoomSlider = el.querySelector('#admCropZoom')
+  const cancelBtn  = el.querySelector('#admCropCancel')
+  const confirmBtn = el.querySelector('#admCropConfirm')
+
+  let scale = 1, tx = 0, ty = 0
+  let dragging = false, startX = 0, startY = 0, startTx = 0, startTy = 0
+  let onConfirm = null
+  let outputW = 400, outputH = 400
+
+  function applyTransform() {
+    img.style.transform = `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(${scale})`
+    img.style.left = '50%'
+    img.style.top  = '50%'
+  }
+
+  zoomSlider.addEventListener('input', () => {
+    scale = zoomSlider.value / 100
+    applyTransform()
+  })
+
+  stage.addEventListener('mousedown', (e) => {
+    dragging = true; stage.classList.add('dragging')
+    startX = e.clientX; startY = e.clientY
+    startTx = tx; startTy = ty
+  })
+  window.addEventListener('mousemove', (e) => {
+    if (!dragging) return
+    tx = startTx + (e.clientX - startX)
+    ty = startTy + (e.clientY - startY)
+    applyTransform()
+  })
+  window.addEventListener('mouseup', () => { dragging = false; stage.classList.remove('dragging') })
+
+  stage.addEventListener('touchstart', (e) => {
+    const t = e.touches[0]
+    dragging = true; startX = t.clientX; startY = t.clientY
+    startTx = tx; startTy = ty
+  }, { passive: true })
+  window.addEventListener('touchmove', (e) => {
+    if (!dragging) return
+    const t = e.touches[0]
+    tx = startTx + (t.clientX - startX)
+    ty = startTy + (t.clientY - startY)
+    applyTransform()
+  }, { passive: true })
+  window.addEventListener('touchend', () => { dragging = false })
+
+  stage.addEventListener('wheel', (e) => {
+    e.preventDefault()
+    const delta = e.deltaY > 0 ? -5 : 5
+    const next = Math.min(400, Math.max(100, parseInt(zoomSlider.value) + delta))
+    zoomSlider.value = next
+    scale = next / 100
+    applyTransform()
+  }, { passive: false })
+
+  cancelBtn.addEventListener('click', close)
+  el.addEventListener('click', (e) => { if (e.target === el) close() })
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && el.classList.contains('open')) close() })
+
+  confirmBtn.addEventListener('click', () => {
+    const stageRect = stage.getBoundingClientRect()
+    const canvas = document.createElement('canvas')
+    canvas.width  = outputW
+    canvas.height = outputH
+    const ctx = canvas.getContext('2d')
+    const sw = stageRect.width
+    const sh = stageRect.height
+    const naturalW = img.naturalWidth
+    const naturalH = img.naturalHeight
+    const rendered = scale * Math.min(sw / naturalW, sh / naturalH) * Math.min(naturalW, naturalH) / Math.min(naturalW, naturalH)
+    const rw = naturalW * scale * (sw / (naturalW < naturalH ? naturalW : naturalW))
+    const rh = naturalH * scale * (sh / (naturalH < naturalW ? naturalH : naturalH))
+    const displayScale = scale * Math.min(sw / naturalW, sh / naturalH)
+    const dw = naturalW * displayScale
+    const dh = naturalH * displayScale
+    const cx = sw / 2 + tx
+    const cy = sh / 2 + ty
+    const srcX = (cx - dw / 2)
+    const srcY = (cy - dh / 2)
+    const scaleToOutput = outputW / sw
+    ctx.drawImage(img, 0, 0, naturalW, naturalH,
+      srcX * scaleToOutput, srcY * scaleToOutput,
+      dw * scaleToOutput, dh * scaleToOutput)
+    const result = canvas.toDataURL('image/jpeg', .92)
+    if (onConfirm) onConfirm(result)
+    close()
+  })
+
+  function close() {
+    el.classList.remove('open')
+    setTimeout(() => { img.src = ''; tx = 0; ty = 0; scale = 1; zoomSlider.value = 100 }, 250)
+  }
+
+  return {
+    open(src, { circular = true, w = 400, h = 400, callback } = {}) {
+      outputW = w; outputH = h; onConfirm = callback
+      tx = 0; ty = 0; scale = 1; zoomSlider.value = 100
+      overlay.classList.toggle('rect', !circular)
+      img.src = src
+      img.onload = () => {
+        applyTransform()
+        el.classList.add('open')
+      }
+    }
+  }
+})()
+
 async function handleAvatarFile(file) {
   if (!file) return
   const dataUrl = await readFileAsDataUrl(file)
-  profileAvatarInput.value = dataUrl
-  updateAvatarDropzone(dataUrl)
-  schedulePersist()
+  cropModal.open(dataUrl, { circular: true, w: 400, h: 400, callback: (cropped) => {
+    profileAvatarInput.value = cropped
+    updateAvatarDropzone(cropped)
+    schedulePersist()
+  }})
 }
 
 profileNameInput.addEventListener('input', schedulePersist)
@@ -610,8 +746,16 @@ ebooksEditorList.addEventListener('change', async (e) => {
     const file = e.target.files[0]
     if (!file) return
     const dataUrl = await readFileAsDataUrl(file)
-    row.querySelector('.ae-cover').value = dataUrl
     e.target.value = ''
+    cropModal.open(dataUrl, { circular: false, w: 300, h: 400, callback: (cropped) => {
+      row.querySelector('.ae-cover').value = cropped
+      updateImagePreview(row.querySelector('.ae-cover-preview'), row.querySelector('.ae-cover-remove'), cropped)
+      syncEbooksFromDom()
+      renderEbooksList()
+      persistNow()
+      markDirty()
+    }})
+    return
   } else if (e.target.classList.contains('ae-download-file')) {
     const file = e.target.files[0]
     if (!file) return
@@ -789,3 +933,32 @@ if (sessionStorage.getItem(AUTH_KEY) === '1') {
 } else {
   showLogin()
 }
+
+/* ─── LIGHTBOX DE IMAGENS NO PAINEL ─── */
+;(function initAdminLightbox() {
+  const lb = document.createElement('div')
+  lb.className = 'adm-lightbox'
+  lb.innerHTML = '<button class="adm-lightbox-close" aria-label="Fechar">✕</button><img alt="" />'
+  document.body.appendChild(lb)
+
+  const img = lb.querySelector('img')
+
+  function open(src) {
+    img.src = src
+    lb.classList.add('open')
+  }
+  function close() {
+    lb.classList.remove('open')
+    setTimeout(() => { img.src = '' }, 250)
+  }
+
+  lb.addEventListener('click', (e) => { if (e.target === lb) close() })
+  lb.querySelector('.adm-lightbox-close').addEventListener('click', close)
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close() })
+
+  document.addEventListener('click', (e) => {
+    const img = e.target.closest('.admin-image-preview')
+    if (!img || !img.src || img.classList.contains('hidden')) return
+    open(img.src)
+  })
+})();

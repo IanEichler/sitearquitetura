@@ -30,9 +30,8 @@ function renderCover(ebook) {
 
   if (cover) {
     return `
-      <div class="ebook-cover ${ebook.status === 'free' ? 'ebook-cover-free' : 'ebook-cover-paid'} ebook-cover-img">
+      <div class="ebook-cover ebook-cover-img">
         <img src="${escapeHtml(cover)}" alt="Capa do e-book${title ? `: ${escapeHtml(title)}` : ''}, de Bianca Viana" loading="lazy" />
-        <span class="ebook-cover-tag">${escapeHtml(tag)}</span>
       </div>
     `
   }
@@ -122,6 +121,33 @@ function renderCard(ebook) {
   `
 }
 
+/* ─── LIGHTBOX ─── */
+function initLightbox() {
+  const lb = document.createElement('div')
+  lb.className = 'img-lightbox'
+  lb.innerHTML = '<button class="img-lightbox-close" aria-label="Fechar">✕</button><img alt="" />'
+  document.body.appendChild(lb)
+
+  const img = lb.querySelector('img')
+  const closeBtn = lb.querySelector('.img-lightbox-close')
+
+  function open(src) {
+    img.src = src
+    lb.classList.add('open')
+    document.body.style.overflow = 'hidden'
+  }
+  function close() {
+    lb.classList.remove('open')
+    document.body.style.overflow = ''
+    setTimeout(() => { img.src = '' }, 300)
+  }
+
+  lb.addEventListener('click', (e) => { if (e.target === lb) close() })
+  closeBtn.addEventListener('click', close)
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close() })
+
+}
+
 function render() {
   const grid = document.getElementById('ebooksGrid')
   if (!grid) return
@@ -133,8 +159,8 @@ function render() {
 }
 
 document.readyState === 'loading'
-  ? document.addEventListener('DOMContentLoaded', render)
-  : render()
+  ? document.addEventListener('DOMContentLoaded', () => { render(); initLightbox() })
+  : (render(), initLightbox())
 
 /* Permite que o painel admin atualize esta página em tempo real
    (ex.: dentro de um iframe de pré-visualização) quando os dados mudam. */
