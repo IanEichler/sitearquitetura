@@ -5,5 +5,8 @@
   "rewrites": [
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/links", "destination": "/links.html" }
+  ],
+  "errors": [
+    { "statusCode": 404, "template": "404.html" }
   ]
 }
