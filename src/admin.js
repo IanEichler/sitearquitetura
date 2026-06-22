@@ -835,6 +835,38 @@ ebooksEditorList.addEventListener('change', async (e) => {
     }
     wrap.querySelector('label i').setAttribute('data-lucide', 'upload')
     wrap.querySelector('label').childNodes[1].textContent = ' Substituir PDF'
+
+    /* ─── extrai título e descrição do PDF ─── */
+    if (window.pdfjsLib) {
+      try {
+        const pdf = await window.pdfjsLib.getDocument(dataUrl).promise
+
+        /* título dos metadados */
+        const meta = await pdf.getMetadata().catch(() => ({}))
+        const pdfTitle = meta?.info?.Title?.trim()
+        const titleInput = row.querySelector('.ae-title')
+        if (pdfTitle && !titleInput.value.trim()) {
+          titleInput.value = pdfTitle
+          row.querySelector('.ae-header-title strong').textContent = pdfTitle
+        }
+
+        /* texto das primeiras 2 páginas para gerar descrição */
+        const descInput = row.querySelector('.ae-description')
+        if (!descInput.value.trim()) {
+          let fullText = ''
+          const pages = Math.min(pdf.numPages, 2)
+          for (let p = 1; p <= pages; p++) {
+            const page = await pdf.getPage(p)
+            const content = await page.getTextContent()
+            fullText += content.items.map(i => i.str).join(' ') + ' '
+          }
+          const clean = fullText.replace(/\s+/g, ' ').trim()
+          const sentences = clean.match(/[^.!?]+[.!?]+/g) || []
+          const desc = sentences.slice(0, 3).join(' ').trim()
+          if (desc.length > 20) descInput.value = desc.slice(0, 300)
+        }
+      } catch {}
+    }
   } else if (!e.target.classList.contains('ae-status')) {
     return
   }
