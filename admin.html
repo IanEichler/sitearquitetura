@@ -127,7 +127,26 @@
                 <h2>Perfil</h2>
 
                 <div class="admin-field">
-                  <label>Foto de perfil</label>
+                  <label>Foto da Dra. Bianca (seção "Sobre" do site)</label>
+                  <div class="admin-image-row">
+                    <div class="admin-image-preview-wrap">
+                      <img id="sobrePhotoPreview" class="admin-image-preview" style="width:64px;height:80px;" src="/eu-sou-a-bianca.jpeg" alt="" />
+                    </div>
+                    <div class="admin-image-controls">
+                      <label class="admin-upload-btn">
+                        <i data-lucide="upload"></i> Alterar foto do site
+                        <input type="file" id="sobrePhotoFile" accept="image/*" hidden />
+                      </label>
+                      <button type="button" class="admin-upload-btn" id="sobrePhotoRemove" style="color:var(--adm-danger)">
+                        <i data-lucide="trash-2"></i> Remover
+                      </button>
+                    </div>
+                  </div>
+                  <p class="admin-hint" style="margin-top:6px">Esta foto aparece apenas na seção "Sobre" do site. É independente da foto da página de links abaixo.</p>
+                </div>
+
+                <div class="admin-field" style="border-top:1px solid var(--adm-border);padding-top:20px;margin-top:8px">
+                  <label>Foto de perfil (página de links)</label>
                   <div class="admin-dropzone" id="avatarDropzone">
                     <input type="file" id="profileAvatarFile" accept="image/*" hidden />
                     <div class="admin-dropzone-empty" id="avatarDropzoneEmpty">

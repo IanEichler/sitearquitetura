@@ -112,6 +112,17 @@ if (processFill) {
   setInterval(advance, 2000)
 })()
 
+/* ─── FOTO DA SEÇÃO SOBRE (do admin) ─── */
+;(function loadSobrePhoto() {
+  try {
+    const cfg = JSON.parse(localStorage.getItem('bv-site-config') || '{}')
+    if (cfg.sobrePhoto) {
+      const img = document.querySelector('.sobre-img-wrap img')
+      if (img) img.src = cfg.sobrePhoto
+    }
+  } catch {}
+})()
+
 /* ─── ANO DINÂMICO NO RODAPÉ ─── */
 const footerYear = document.getElementById('footerYear')
 if (footerYear) footerYear.textContent = new Date().getFullYear()

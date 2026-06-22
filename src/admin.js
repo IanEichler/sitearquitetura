@@ -1,6 +1,12 @@
 import { loadData, saveData, resetData, defaultProfile, defaultLinks, iconOptions } from './links-data.js'
 import { loadEbooks, saveEbooks, resetEbooks, defaultEbooks } from './ebooks-data.js'
 
+const SITE_CONFIG_KEY = 'bv-site-config'
+function loadSiteConfig() {
+  try { return JSON.parse(localStorage.getItem(SITE_CONFIG_KEY)) || {} } catch { return {} }
+}
+function saveSiteConfig(cfg) { localStorage.setItem(SITE_CONFIG_KEY, JSON.stringify(cfg)) }
+
 /* Senha de acesso ao painel — não fica em texto puro no código,
    apenas o hash (SHA-256) dela. Para trocar a senha, gere o novo
    hash (ex.: no console do navegador):
@@ -449,6 +455,35 @@ profileAvatarFile.addEventListener('change', () => {
 })
 
 profileAvatarChange.addEventListener('click', () => profileAvatarFile.click())
+
+/* ─── FOTO DO SOBRE (SITE PRINCIPAL) ─── */
+const sobrePhotoPreview = document.getElementById('sobrePhotoPreview')
+const sobrePhotoFile    = document.getElementById('sobrePhotoFile')
+const sobrePhotoRemove  = document.getElementById('sobrePhotoRemove')
+
+;(function initSobrePhoto() {
+  const cfg = loadSiteConfig()
+  if (cfg.sobrePhoto) sobrePhotoPreview.src = cfg.sobrePhoto
+})()
+
+sobrePhotoFile?.addEventListener('change', async () => {
+  const file = sobrePhotoFile.files[0]
+  if (!file) return
+  cropModal.open(await readFileAsDataUrl(file), { circular: false, w: 800, h: 1000, callback: (cropped) => {
+    sobrePhotoPreview.src = cropped
+    saveSiteConfig({ ...loadSiteConfig(), sobrePhoto: cropped })
+    sobrePhotoFile.value = ''
+    markDirty()
+  }})
+})
+
+sobrePhotoRemove?.addEventListener('click', () => {
+  sobrePhotoPreview.src = '/eu-sou-a-bianca.jpeg'
+  const cfg = loadSiteConfig()
+  delete cfg.sobrePhoto
+  saveSiteConfig(cfg)
+  markDirty()
+})
 
 profileAvatarRemove.addEventListener('click', () => {
   profileAvatarInput.value = ''
