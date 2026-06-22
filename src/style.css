@@ -789,6 +789,7 @@ button:focus, .btn:focus {
   display: grid; grid-template-columns: 180px 1fr; gap: 32px; align-items: center;
   background: var(--off); border-radius: var(--r); padding: 32px;
 }
+.ebook-card .ebook-cover { width: 180px; height: 252px; flex-shrink: 0; }
 
 .ebook-cover {
   position: relative; aspect-ratio: 3/4.2; border-radius: var(--rs);
@@ -799,8 +800,8 @@ button:focus, .btn:focus {
 .ebook-cover-free { background: linear-gradient(160deg, var(--blue-l), var(--navy)); }
 .ebook-cover-paid { background: linear-gradient(160deg, var(--navy), var(--navy-deep)); border: 1px solid var(--gold); }
 
-.ebook-cover-img { padding: 0; aspect-ratio: unset; height: auto; cursor: default; }
-.ebook-cover-img img { position: static; width: 100%; height: auto; object-fit: unset; display: block; border-radius: var(--rs); }
+.ebook-cover-img { padding: 0; cursor: default; }
+.ebook-cover-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; border-radius: var(--rs); }
 
 /* ── LIGHTBOX ── */
 .img-lightbox {
@@ -1250,6 +1251,7 @@ button:focus, .btn:focus {
 
   .ebooks-grid { grid-template-columns: 1fr; gap: 24px; }
   .ebook-card { grid-template-columns: 140px 1fr; gap: 20px; padding: 20px; }
+  .ebook-card .ebook-cover { width: 140px; height: 196px; }
   .ebook-info p { margin-bottom: 16px; }
 
   .section-header { flex-direction: column; align-items: flex-start; }

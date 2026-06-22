@@ -1,4 +1,5 @@
 import { loadData, STORAGE_KEY } from './links-data.js'
+import { loadEbooks, EBOOKS_STORAGE_KEY } from './ebooks-data.js'
 
 function escapeHtml(str) {
   const div = document.createElement('div')
@@ -19,8 +20,42 @@ function resolveUrl(url) {
   return `https://${trimmed}`
 }
 
+const IG_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="17" height="17"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>`
+
+function renderLinkBtn(link) {
+  const href = resolveUrl(link.url)
+  const isExternal = !isInternalUrl(link.url)
+  const cls = ['link-btn', link.primary ? 'link-btn-primary' : ''].filter(Boolean).join(' ')
+  const isIg = link.icon === 'instagram' || link.label.toLowerCase().includes('instagram')
+  const iconHtml = isIg ? IG_SVG : `<i data-lucide="${escapeHtml(link.icon)}"></i>`
+  return `
+    <a class="${cls}" href="${escapeHtml(href)}" ${isExternal ? 'target="_blank" rel="noopener"' : ''}>
+      <span class="link-icon">${iconHtml}</span>
+      <span class="link-label">${escapeHtml(link.label)}</span>
+    </a>
+  `
+}
+
+function renderEbookBtn(ebook) {
+  if (ebook.showInLinks === false) return ''
+  const title = (ebook.title || 'E-book').trim()
+  const url = (ebook.downloadUrl || '').trim()
+  if (!url) return ''
+  const isData = url.startsWith('data:')
+  const href = isData ? url : resolveUrl(url)
+  const isExternal = isData || !isInternalUrl(url)
+  const download = isData ? ' download' : ''
+  return `
+    <a class="link-btn" href="${escapeHtml(href)}" ${isExternal ? 'target="_blank" rel="noopener"' : ''}${download}>
+      <span class="link-icon"><i data-lucide="book-open"></i></span>
+      <span class="link-label">${escapeHtml(title)}</span>
+    </a>
+  `
+}
+
 function render() {
   const { profile, links } = loadData()
+  const ebooks = loadEbooks()
 
   const profileEl = document.getElementById('linksProfile')
   profileEl.innerHTML = `
@@ -31,18 +66,17 @@ function render() {
     <p>${escapeHtml(profile.subtitle).replace(/\n/g, '<br>')}</p>
   `
 
+  const ebookBtns = ebooks.map(renderEbookBtn).filter(Boolean).join('')
+
   const listEl = document.getElementById('linksList')
-  listEl.innerHTML = links.map(link => {
-    const href = resolveUrl(link.url)
-    const isExternal = !isInternalUrl(link.url)
-    const cls = ['link-btn', link.primary ? 'link-btn-primary' : ''].filter(Boolean).join(' ')
-    return `
-      <a class="${cls}" href="${escapeHtml(href)}" ${isExternal ? 'target="_blank" rel="noopener"' : ''}>
-        <span class="link-icon"><i data-lucide="${escapeHtml(link.icon)}"></i></span>
-        <span class="link-label">${escapeHtml(link.label)}</span>
-      </a>
-    `
-  }).join('')
+  listEl.innerHTML =
+    links.map(renderLinkBtn).join('') +
+    (ebookBtns ? `
+      <div class="links-section-divider">
+        <span>E-books</span>
+      </div>
+      ${ebookBtns}
+    ` : '')
 
   window.lucide?.createIcons()
 }
@@ -121,7 +155,7 @@ document.readyState === 'loading'
 /* Permite que o painel admin atualize esta página em tempo real
    (ex.: dentro de um iframe de pré-visualização) quando os dados mudam. */
 window.addEventListener('storage', (e) => {
-  if (e.key === STORAGE_KEY) render()
+  if (e.key === STORAGE_KEY || e.key === EBOOKS_STORAGE_KEY) render()
 })
 
 const footerYear = document.getElementById('footerYear')

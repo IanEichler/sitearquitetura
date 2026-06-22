@@ -678,6 +678,12 @@ function renderEbooksList() {
             <input type="text" class="ae-price" placeholder="Ex.: R$ 29,90" value="${escapeAttr(ebook.price)}" />
           </div>
           <div class="admin-field">
+            <label class="ae-show-links-label">
+              <input type="checkbox" class="ae-show-links" ${ebook.showInLinks !== false ? 'checked' : ''} />
+              Mostrar na página de links
+            </label>
+          </div>
+          <div class="admin-field">
             <label>Capa (caminho, link ou imagem enviada)</label>
             <div class="admin-image-row">
               <div class="admin-image-preview-wrap">
@@ -685,20 +691,37 @@ function renderEbooksList() {
                 <button type="button" class="admin-image-remove ae-cover-remove ${ebook.cover ? '' : 'hidden'}" title="Remover imagem">✕</button>
               </div>
               <div class="admin-image-controls">
-                <input type="text" class="ae-cover" placeholder="/ebook-capa.jpg ou https://..." value="${escapeAttr(ebook.cover)}" />
+                <input type="hidden" class="ae-cover" value="${escapeAttr(ebook.cover)}" />
                 <label class="admin-upload-btn">
                   <i data-lucide="upload"></i> Enviar imagem
                   <input type="file" class="ae-cover-file" accept="image/*" />
                 </label>
+                <button type="button" class="admin-upload-btn ae-pdf-cover-btn" title="Usar primeira página do PDF como capa">
+                  <i data-lucide="file-image"></i> Gerar do PDF
+                </button>
               </div>
             </div>
           </div>
           <div class="admin-field">
             <label>Link de download / compra</label>
-            <div class="admin-file-row">
-              <input type="text" class="ae-download" placeholder="/ebooks/arquivo.pdf ou https://..." value="${escapeAttr(ebook.downloadUrl)}" />
-              <label class="admin-upload-btn ae-download-upload ${ebook.status === 'free' ? '' : 'hidden'}">
-                <i data-lucide="upload"></i> Enviar PDF
+            <div class="ae-download-tabs">
+              <button type="button" class="ae-dl-tab ${!ebook.downloadUrl.startsWith('data:') ? 'active' : ''}" data-tab="link">
+                <i data-lucide="link"></i> Link
+              </button>
+              <button type="button" class="ae-dl-tab ${ebook.downloadUrl.startsWith('data:') ? 'active' : ''}" data-tab="file">
+                <i data-lucide="file-text"></i> Arquivo
+              </button>
+            </div>
+            <input type="hidden" class="ae-download" value="${escapeAttr(ebook.downloadUrl)}" />
+            <div class="ae-dl-link-wrap ${ebook.downloadUrl.startsWith('data:') ? 'hidden' : ''}">
+              <input type="text" class="ae-download-link-input" placeholder="https://... ou /ebooks/arquivo.pdf" value="${escapeAttr(ebook.downloadUrl.startsWith('data:') ? '' : ebook.downloadUrl)}" />
+            </div>
+            <div class="ae-dl-file-wrap ${ebook.downloadUrl.startsWith('data:') ? '' : 'hidden'}">
+              ${ebook.downloadUrl.startsWith('data:')
+                ? `<div class="ae-dl-file-badge"><i data-lucide="check-circle"></i> PDF enviado <button type="button" class="ae-dl-file-remove">✕</button></div>`
+                : ''}
+              <label class="admin-upload-btn">
+                <i data-lucide="upload"></i> ${ebook.downloadUrl.startsWith('data:') ? 'Substituir PDF' : 'Enviar PDF'}
                 <input type="file" class="ae-download-file" accept="application/pdf" />
               </label>
             </div>
@@ -721,6 +744,7 @@ function syncEbooksFromDom() {
     price: row.querySelector('.ae-price').value.trim(),
     cover: row.querySelector('.ae-cover').value.trim(),
     downloadUrl: row.querySelector('.ae-download').value.trim(),
+    showInLinks: row.querySelector('.ae-show-links').checked,
   }))
 }
 
@@ -730,6 +754,10 @@ ebooksEditorList.addEventListener('input', (e) => {
 
   if (e.target.classList.contains('ae-cover')) {
     updateImagePreview(row.querySelector('.ae-cover-preview'), row.querySelector('.ae-cover-remove'), e.target.value)
+  }
+  if (e.target.classList.contains('ae-download-link-input')) {
+    row.querySelector('.ae-download').value = e.target.value.trim()
+    schedulePersist()
   }
   if (e.target.classList.contains('ae-title')) {
     row.querySelector('.ae-header-title strong').textContent = e.target.value.trim() || 'Novo e-book'
@@ -762,6 +790,16 @@ ebooksEditorList.addEventListener('change', async (e) => {
     const dataUrl = await readFileAsDataUrl(file)
     row.querySelector('.ae-download').value = dataUrl
     e.target.value = ''
+    const wrap = row.querySelector('.ae-dl-file-wrap')
+    if (!wrap.querySelector('.ae-dl-file-badge')) {
+      const badge = document.createElement('div')
+      badge.className = 'ae-dl-file-badge'
+      badge.innerHTML = `<i data-lucide="check-circle"></i> PDF enviado <button type="button" class="ae-dl-file-remove">✕</button>`
+      wrap.insertBefore(badge, wrap.querySelector('label'))
+      window.lucide?.createIcons()
+    }
+    wrap.querySelector('label i').setAttribute('data-lucide', 'upload')
+    wrap.querySelector('label').childNodes[1].textContent = ' Substituir PDF'
   } else if (!e.target.classList.contains('ae-status')) {
     return
   }
@@ -777,11 +815,72 @@ ebooksEditorList.addEventListener('click', (e) => {
   if (!row) return
   const index = Number(row.dataset.index)
 
+  /* abas link / arquivo */
+  const dlTab = e.target.closest('.ae-dl-tab')
+  if (dlTab) {
+    const tab = dlTab.dataset.tab
+    row.querySelectorAll('.ae-dl-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab))
+    row.querySelector('.ae-dl-link-wrap').classList.toggle('hidden', tab !== 'link')
+    row.querySelector('.ae-dl-file-wrap').classList.toggle('hidden', tab !== 'file')
+    if (tab === 'link') {
+      const linkVal = row.querySelector('.ae-download-link-input').value.trim()
+      row.querySelector('.ae-download').value = linkVal
+    }
+    return
+  }
+
+  /* remover arquivo enviado */
+  if (e.target.closest('.ae-dl-file-remove')) {
+    row.querySelector('.ae-download').value = ''
+    const wrap = row.querySelector('.ae-dl-file-wrap')
+    wrap.querySelector('.ae-dl-file-badge')?.remove()
+    syncEbooksFromDom()
+    persistNow()
+    markDirty()
+    return
+  }
+
   if (e.target.closest('.ae-cover-remove')) {
     const coverInput = row.querySelector('.ae-cover')
     coverInput.value = ''
     updateImagePreview(row.querySelector('.ae-cover-preview'), row.querySelector('.ae-cover-remove'), '')
     schedulePersist()
+    return
+  }
+
+  if (e.target.closest('.ae-pdf-cover-btn')) {
+    const pdfSrc = row.querySelector('.ae-download').value.trim()
+    if (!pdfSrc) {
+      alert('Faça o upload do PDF primeiro para gerar a capa.')
+      return
+    }
+    const btn = e.target.closest('.ae-pdf-cover-btn')
+    btn.disabled = true
+    btn.textContent = 'Gerando...'
+    ;(async () => {
+      try {
+        const pdf = await window.pdfjsLib.getDocument(pdfSrc).promise
+        const page = await pdf.getPage(1)
+        const viewport = page.getViewport({ scale: 2 })
+        const canvas = document.createElement('canvas')
+        canvas.width = viewport.width
+        canvas.height = viewport.height
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.92)
+        row.querySelector('.ae-cover').value = dataUrl
+        updateImagePreview(row.querySelector('.ae-cover-preview'), row.querySelector('.ae-cover-remove'), dataUrl)
+        syncEbooksFromDom()
+        renderEbooksList()
+        persistNow()
+        markDirty()
+      } catch {
+        alert('Não foi possível gerar a capa. Verifique se o PDF foi carregado corretamente.')
+      } finally {
+        btn.disabled = false
+        btn.innerHTML = '<i data-lucide="file-image"></i> Gerar do PDF'
+        window.lucide?.createIcons()
+      }
+    })()
     return
   }
 

@@ -542,6 +542,39 @@ select.al-icon:focus { border-color: var(--adm-primary); }
 .admin-upload-btn svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; }
 .admin-upload-btn:hover { background: var(--adm-primary-soft); border-color: var(--adm-primary); }
 .admin-upload-btn input[type="file"] { display: none; }
+.ae-pdf-cover-btn { border-color: #004AAD22; color: #004AAD; }
+.ae-pdf-cover-btn:hover { background: #004AAD11; border-color: #004AAD; }
+.ae-show-links-label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 500; color: var(--adm-text);
+  cursor: pointer; padding: 10px 0;
+}
+.ae-show-links { accent-color: #004AAD; width: 16px; height: 16px; cursor: pointer; }
+
+.ae-download-tabs {
+  display: flex; gap: 6px; margin-bottom: 10px;
+}
+.ae-dl-tab {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 500;
+  border: 1px solid var(--adm-border); background: var(--adm-surface);
+  color: var(--adm-text-muted); cursor: pointer; transition: all .15s;
+}
+.ae-dl-tab svg { width: 13px; height: 13px; }
+.ae-dl-tab.active { background: #004AAD; border-color: #004AAD; color: #fff; }
+
+.ae-dl-file-badge {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 12px; border-radius: 8px; margin-bottom: 8px;
+  background: #e8f5e9; border: 1px solid #a5d6a7;
+  font-size: 12px; font-weight: 500; color: #2e7d32;
+}
+.ae-dl-file-badge svg { width: 14px; height: 14px; stroke: #2e7d32; }
+.ae-dl-file-remove {
+  margin-left: auto; background: none; border: none;
+  color: #c62828; font-size: 13px; cursor: pointer; padding: 0 4px;
+  line-height: 1;
+}
 
 .admin-file-row { display: flex; gap: 10px; align-items: flex-start; }
 .admin-file-row input[type="text"] { flex: 1; }

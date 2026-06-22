@@ -70,31 +70,32 @@
 
 .link-btn {
   display: flex; align-items: center; gap: 14px;
-  width: 100%; padding: 16px 20px;
+  width: 100%; padding: 15px 18px;
   border-radius: var(--r);
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.12);
-  backdrop-filter: blur(6px);
-  color: var(--white);
-  font-family: var(--fb); font-size: 15px; font-weight: 500;
-  transition: background var(--t), border-color var(--t), transform var(--t);
+  background: #c7c7c7;
+  border: 1px solid rgba(255,255,255,.5);
+  border-left: 3px solid #004AAD;
+  color: #071A2E;
+  font-family: var(--fb); font-size: 14px; font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0,0,0,.12);
+  transition: background var(--t), transform var(--t), box-shadow var(--t);
 }
 .link-btn:hover {
-  background: rgba(255,255,255,.09);
-  border-color: rgba(201,162,75,.45);
-  transform: translateY(-2px);
+  background: #d2d2d2;
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px rgba(0,0,0,.18);
 }
-.link-btn:active { transform: translateY(0); }
+.link-btn:active { transform: translateX(2px); }
 
 .link-icon {
   flex-shrink: 0;
-  width: 38px; height: 38px; border-radius: var(--rs);
+  width: 36px; height: 36px; border-radius: var(--rs);
   display: flex; align-items: center; justify-content: center;
-  background: rgba(255,255,255,.08);
+  background: #004AAD;
   transition: background var(--t);
 }
-.link-btn:hover .link-icon { background: rgba(0,74,173,.5); }
-.link-icon svg { width: 18px; height: 18px; stroke: rgba(255,255,255,.9); stroke-width: 1.8; }
+.link-btn:hover .link-icon { background: #003580; }
+.link-icon svg { width: 17px; height: 17px; stroke: #fff; stroke-width: 1.8; }
 
 .link-label { flex: 1; }
 
@@ -102,12 +103,50 @@
 .link-btn-primary {
   background: linear-gradient(135deg, var(--blue-l), var(--blue));
   border-color: transparent;
+  border-left-color: transparent;
+  color: #fff;
   font-weight: 600;
 }
 .link-btn-primary .link-icon { background: rgba(255,255,255,.15); }
+.link-btn-primary .link-icon svg { stroke: #fff; }
 .link-btn-primary:hover {
   background: linear-gradient(135deg, var(--blue-l), var(--blue-l));
   border-color: transparent;
+}
+
+/* ── SEPARADOR DE SEÇÃO ── */
+.links-section-divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 8px 0 4px;
+}
+.links-section-divider::before,
+.links-section-divider::after {
+  content: ''; flex: 1; height: 1px;
+  background: rgba(255,255,255,.18);
+}
+.links-section-divider span {
+  font-size: 11px; font-weight: 600; letter-spacing: .14em;
+  text-transform: uppercase; color: rgba(255,255,255,.4);
+  white-space: nowrap;
+}
+
+/* ── EBOOK BUTTON ── */
+.link-btn-ebook {
+  align-items: center;
+  gap: 12px;
+}
+.link-ebook-cover {
+  width: 38px; height: 52px; border-radius: 4px;
+  overflow: hidden; flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.link-ebook-cover img { width: 100%; height: 100%; object-fit: cover; }
+.link-ebook-badge {
+  flex-shrink: 0;
+  font-size: 10px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase;
+  background: #004AAD; color: #fff;
+  padding: 3px 8px; border-radius: 100px;
 }
 
 /* ── RODAPÉ ── */

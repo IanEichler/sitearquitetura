@@ -8,6 +8,7 @@ export const defaultEbooks = [
     price: '',
     cover: '/ebook-mae-capa.jpg',
     downloadUrl: '/ebooks/o-que-toda-mae-precisa-saber.pdf',
+    showInLinks: true,
   },
   {
     status: 'soon',

@@ -7,7 +7,7 @@ export const iconOptions = [
   { value: 'phone',          label: 'Telefone' },
   { value: 'mail',           label: 'E-mail' },
   { value: 'globe',          label: 'Site' },
-  { value: 'camera',         label: 'Instagram / Foto' },
+  { value: 'instagram',      label: 'Instagram' },
   { value: 'map-pin',        label: 'Localização' },
   { value: 'scale',          label: 'Jurídico / Balança' },
   { value: 'gavel',          label: 'Processo / Martelo' },
@@ -35,15 +35,24 @@ export const defaultProfile = {
 export const defaultLinks = [
   {
     icon: 'calendar-check',
-    label: 'Agende sua Consulta',
+    label: 'Conheça meu trabalho e agende seu horário comigo',
     url: 'https://wa.me/5566996781296?text=Ol%C3%A1%2C%20Bianca%20Viana!%20Vim%20pelo%20link%20da%20bio%20e%20gostaria%20de%20agendar%20uma%20consulta.',
     primary: true,
   },
-  { icon: 'globe', label: 'Site Oficial', url: '/index.html', primary: false },
-  { icon: 'scale', label: 'Áreas de Atuação', url: '/index.html#servicos', primary: false },
-  { icon: 'book-open', label: 'E-books Gratuitos', url: '/index.html#ebooks', primary: false },
-  { icon: 'camera', label: 'Instagram', url: 'https://instagram.com/biancavianaadvogada', primary: false },
-  { icon: 'mail', label: 'E-mail', url: 'mailto:contato@biancavianaadvogada.com.br', primary: false },
+  {
+    icon: 'users',
+    label: 'Mentoria, parcerias e consultoria de caso (para advogadas)',
+    url: 'https://wa.me/5566996781296?text=Ol%C3%A1%2C%20Bianca%20Viana!%20Vim%20pelo%20link%20da%20bio%20e%20tenho%20interesse%20em%20mentoria%2C%20parceria%20ou%20consultoria%20de%20caso.',
+    primary: false,
+  },
+  {
+    icon: 'book-open',
+    label: 'E-book gratuito: O Que Toda Mãe Precisa Saber sobre pensão, guarda, convivência e segurança jurídica',
+    url: '/index.html#ebooks',
+    primary: false,
+  },
+  { icon: 'book-open', label: 'E-book', url: '/index.html#ebooks', primary: false },
+  { icon: 'book-open', label: 'E-book', url: '/index.html#ebooks', primary: false },
 ]
 
 export function loadData() {
@@ -55,6 +64,9 @@ export function loadData() {
         if (parsed.profile.avatar === '/eu-sou-a-bianca.png') {
           parsed.profile.avatar = '/eu-sou-a-bianca.jpeg'
         }
+        parsed.links = parsed.links.filter(l =>
+          !l.label.toLowerCase().includes('instagram') && l.icon !== 'instagram' && l.icon !== 'camera'
+        )
         return parsed
       }
     }

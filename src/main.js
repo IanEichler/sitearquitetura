@@ -127,6 +127,14 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   })
 })
 
+/* Scroll para hash da URL ao carregar a página (ex.: index.html#servicos) */
+if (window.location.hash) {
+  const hashTarget = document.querySelector(window.location.hash)
+  if (hashTarget) {
+    setTimeout(() => lenis.scrollTo(hashTarget, { offset: -72, duration: 1.2 }), 400)
+  }
+}
+
 /* ─── FORM SUBMIT → WHATSAPP ─── */
 const form = document.getElementById('contactForm')
 if (form) {
