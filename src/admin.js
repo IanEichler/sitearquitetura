@@ -697,70 +697,88 @@ function renderEbooksList() {
       </div>
       <div class="ae-body">
         <div class="ae-body-inner">
-          <div class="ae-top-row">
-            <select class="ae-status">${statusOptionsHtml}</select>
+
+          <!-- linha 1: status + toggle links -->
+          <div class="ae-row-2">
+            <div class="admin-field">
+              <label>Status</label>
+              <select class="ae-status">${statusOptionsHtml}</select>
+            </div>
+            <div class="admin-field">
+              <label>Visibilidade</label>
+              <label class="ae-show-links-label">
+                <input type="checkbox" class="ae-show-links" ${ebook.showInLinks !== false ? 'checked' : ''} />
+                Mostrar na página de links
+              </label>
+            </div>
           </div>
+
+          <!-- título -->
           <div class="admin-field">
             <label>Título</label>
             <input type="text" class="ae-title" placeholder="Título do e-book" value="${escapeAttr(ebook.title)}" />
           </div>
+
+          <!-- descrição -->
           <div class="admin-field">
             <label>Descrição</label>
-            <textarea class="ae-description" rows="3">${escapeAttr(ebook.description)}</textarea>
+            <textarea class="ae-description" rows="3" placeholder="Breve descrição do conteúdo...">${escapeAttr(ebook.description)}</textarea>
           </div>
+
+          <!-- preço (só pago) -->
           <div class="admin-field ae-price-field ${ebook.status === 'paid' ? '' : 'hidden'}">
             <label>Preço</label>
             <input type="text" class="ae-price" placeholder="Ex.: R$ 29,90" value="${escapeAttr(ebook.price)}" />
           </div>
-          <div class="admin-field">
-            <label class="ae-show-links-label">
-              <input type="checkbox" class="ae-show-links" ${ebook.showInLinks !== false ? 'checked' : ''} />
-              Mostrar na página de links
-            </label>
-          </div>
-          <div class="admin-field">
-            <label>Capa (caminho, link ou imagem enviada)</label>
-            <div class="admin-image-row">
-              <div class="admin-image-preview-wrap">
-                <img class="ae-cover-preview admin-image-preview ${ebook.cover ? '' : 'hidden'}" src="${escapeAttr(ebook.cover)}" alt="" />
-                <button type="button" class="admin-image-remove ae-cover-remove ${ebook.cover ? '' : 'hidden'}" title="Remover imagem">✕</button>
-              </div>
-              <div class="admin-image-controls">
+
+          <!-- capa + arquivo lado a lado -->
+          <div class="ae-row-2">
+            <div class="admin-field">
+              <label>Capa</label>
+              <div class="ae-cover-area">
                 <input type="hidden" class="ae-cover" value="${escapeAttr(ebook.cover)}" />
-                <label class="admin-upload-btn">
-                  <i data-lucide="upload"></i> Enviar imagem
-                  <input type="file" class="ae-cover-file" accept="image/*" />
-                </label>
-                <button type="button" class="admin-upload-btn ae-pdf-cover-btn" title="Usar primeira página do PDF como capa">
-                  <i data-lucide="file-image"></i> Gerar do PDF
+                <div class="admin-image-preview-wrap">
+                  <img class="ae-cover-preview admin-image-preview ${ebook.cover ? '' : 'hidden'}" src="${escapeAttr(ebook.cover)}" alt="" style="width:56px;height:74px" />
+                  <button type="button" class="admin-image-remove ae-cover-remove ${ebook.cover ? '' : 'hidden'}" title="Remover">✕</button>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <label class="admin-upload-btn">
+                    <i data-lucide="image"></i> Imagem
+                    <input type="file" class="ae-cover-file" accept="image/*" />
+                  </label>
+                  <button type="button" class="admin-upload-btn ae-pdf-cover-btn">
+                    <i data-lucide="file-image"></i> Da 1ª pág. do PDF
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-field">
+              <label>Arquivo / Link</label>
+              <div class="ae-download-tabs">
+                <button type="button" class="ae-dl-tab ${!ebook.downloadUrl.startsWith('data:') ? 'active' : ''}" data-tab="link">
+                  <i data-lucide="link"></i> Link
+                </button>
+                <button type="button" class="ae-dl-tab ${ebook.downloadUrl.startsWith('data:') ? 'active' : ''}" data-tab="file">
+                  <i data-lucide="file-text"></i> PDF
                 </button>
               </div>
+              <input type="hidden" class="ae-download" value="${escapeAttr(ebook.downloadUrl)}" />
+              <div class="ae-dl-link-wrap ${ebook.downloadUrl.startsWith('data:') ? 'hidden' : ''}">
+                <input type="text" class="ae-download-link-input" placeholder="https://... ou /ebooks/arquivo.pdf" value="${escapeAttr(ebook.downloadUrl.startsWith('data:') ? '' : ebook.downloadUrl)}" />
+              </div>
+              <div class="ae-dl-file-wrap ${ebook.downloadUrl.startsWith('data:') ? '' : 'hidden'}">
+                ${ebook.downloadUrl.startsWith('data:')
+                  ? `<div class="ae-dl-file-badge"><i data-lucide="check-circle"></i> PDF enviado <button type="button" class="ae-dl-file-remove">✕</button></div>`
+                  : ''}
+                <label class="admin-upload-btn">
+                  <i data-lucide="upload"></i> ${ebook.downloadUrl.startsWith('data:') ? 'Substituir PDF' : 'Enviar PDF'}
+                  <input type="file" class="ae-download-file" accept="application/pdf" />
+                </label>
+              </div>
             </div>
           </div>
-          <div class="admin-field">
-            <label>Link de download / compra</label>
-            <div class="ae-download-tabs">
-              <button type="button" class="ae-dl-tab ${!ebook.downloadUrl.startsWith('data:') ? 'active' : ''}" data-tab="link">
-                <i data-lucide="link"></i> Link
-              </button>
-              <button type="button" class="ae-dl-tab ${ebook.downloadUrl.startsWith('data:') ? 'active' : ''}" data-tab="file">
-                <i data-lucide="file-text"></i> Arquivo
-              </button>
-            </div>
-            <input type="hidden" class="ae-download" value="${escapeAttr(ebook.downloadUrl)}" />
-            <div class="ae-dl-link-wrap ${ebook.downloadUrl.startsWith('data:') ? 'hidden' : ''}">
-              <input type="text" class="ae-download-link-input" placeholder="https://... ou /ebooks/arquivo.pdf" value="${escapeAttr(ebook.downloadUrl.startsWith('data:') ? '' : ebook.downloadUrl)}" />
-            </div>
-            <div class="ae-dl-file-wrap ${ebook.downloadUrl.startsWith('data:') ? '' : 'hidden'}">
-              ${ebook.downloadUrl.startsWith('data:')
-                ? `<div class="ae-dl-file-badge"><i data-lucide="check-circle"></i> PDF enviado <button type="button" class="ae-dl-file-remove">✕</button></div>`
-                : ''}
-              <label class="admin-upload-btn">
-                <i data-lucide="upload"></i> ${ebook.downloadUrl.startsWith('data:') ? 'Substituir PDF' : 'Enviar PDF'}
-                <input type="file" class="ae-download-file" accept="application/pdf" />
-              </label>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>

@@ -61,7 +61,15 @@ function renderAction(ebook) {
         </button>
       `
     }
+    const isDataUrl = ebook.downloadUrl.startsWith('data:')
     const isExternal = !isInternalUrl(ebook.downloadUrl)
+    if (isDataUrl) {
+      return `
+        <button type="button" class="btn btn-primary btn-full ae-download-blob" data-url="${escapeHtml(ebook.downloadUrl)}" data-filename="${escapeHtml((ebook.title || 'ebook').replace(/\s+/g,'-').toLowerCase())}.pdf">
+          <i data-lucide="download"></i> Baixar e-book gratuito
+        </button>
+      `
+    }
     return `
       <a href="${escapeHtml(downloadUrl)}" download class="btn btn-primary btn-full" ${isExternal ? 'target="_blank" rel="noopener"' : ''}>
         <i data-lucide="download"></i> Baixar e-book gratuito
@@ -161,6 +169,26 @@ function render() {
 document.readyState === 'loading'
   ? document.addEventListener('DOMContentLoaded', () => { render(); initLightbox() })
   : (render(), initLightbox())
+
+/* download de PDFs armazenados como data URL (evita about:blank#blocked) */
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.ae-download-blob')
+  if (!btn) return
+  const dataUrl = btn.dataset.url
+  const filename = btn.dataset.filename || 'ebook.pdf'
+  const [header, b64] = dataUrl.split(',')
+  const mime = header.match(/:(.*?);/)?.[1] || 'application/pdf'
+  const bytes = atob(b64)
+  const arr = new Uint8Array(bytes.length)
+  for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i)
+  const blob = new Blob([arr], { type: mime })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url; a.download = filename
+  document.body.appendChild(a); a.click()
+  document.body.removeChild(a)
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
+})
 
 /* Permite que o painel admin atualize esta página em tempo real
    (ex.: dentro de um iframe de pré-visualização) quando os dados mudam. */

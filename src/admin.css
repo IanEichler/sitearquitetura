@@ -412,6 +412,8 @@ select.al-icon:focus { border-color: var(--adm-primary); }
 .ae-body-inner { padding: 0 14px 16px; display: flex; flex-direction: column; gap: 14px; border-top: 1px solid var(--adm-border); padding-top: 14px; }
 
 .ae-top-row { display: flex; align-items: center; gap: 10px; }
+.ae-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.ae-cover-area { display: flex; align-items: flex-start; gap: 12px; }
 .ae-top-row select.ae-status {
   flex: 1; max-width: 200px; padding: 9px 10px; border-radius: var(--adm-rs);
   border: 1px solid var(--adm-border); font-family: var(--fb); font-size: 13px;
