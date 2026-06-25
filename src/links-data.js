@@ -36,13 +36,13 @@ export const defaultLinks = [
   {
     icon: 'calendar-check',
     label: 'Conheça meu trabalho e agende seu horário comigo',
-    url: 'https://wa.me/5566996781296?text=Ol%C3%A1%2C%20Bianca%20Viana!%20Vim%20pelo%20link%20da%20bio%20e%20gostaria%20de%20agendar%20uma%20consulta.',
+    url: 'https://wa.me/5566996216698?text=Ol%C3%A1%2C%20Bianca%20Viana!%20Vim%20pelo%20link%20da%20bio%20e%20gostaria%20de%20agendar%20uma%20consulta.',
     primary: true,
   },
   {
     icon: 'users',
     label: 'Mentoria, parcerias e consultoria de caso (para advogadas)',
-    url: 'https://wa.me/5566996781296?text=Ol%C3%A1%2C%20Bianca%20Viana!%20Vim%20pelo%20link%20da%20bio%20e%20tenho%20interesse%20em%20mentoria%2C%20parceria%20ou%20consultoria%20de%20caso.',
+    url: 'https://wa.me/5566996216698?text=Ol%C3%A1%2C%20Bianca%20Viana!%20Vim%20pelo%20link%20da%20bio%20e%20tenho%20interesse%20em%20mentoria%2C%20parceria%20ou%20consultoria%20de%20caso.',
     primary: false,
   },
   {
