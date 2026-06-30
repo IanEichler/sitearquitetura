@@ -1,5 +1,6 @@
 import { loadData } from './links-data.js'
 import { loadEbooks } from './ebooks-data.js'
+import { initPdfViewer } from './pdf-viewer.js'
 
 function escapeHtml(str) {
   const div = document.createElement('div')
@@ -38,15 +39,15 @@ function renderEbookBtn(ebook) {
   const title = (ebook.title || 'E-book').trim()
   const url = (ebook.downloadUrl || '').trim()
   if (!url) return ''
-  const isData = url.startsWith('data:')
-  const href = isData ? url : resolveUrl(url)
-  const isExternal = isData || !isInternalUrl(url)
-  const download = isData ? ' download' : ''
+  const filename = `${title.replace(/\s+/g, '-').toLowerCase()}.pdf`
   return `
-    <a class="link-btn" href="${escapeHtml(href)}" ${isExternal ? 'target="_blank" rel="noopener"' : ''}${download}>
+    <button type="button" class="link-btn ae-open-pdf"
+      data-url="${escapeHtml(url)}"
+      data-title="${escapeHtml(title)}"
+      data-filename="${escapeHtml(filename)}">
       <span class="link-icon"><i data-lucide="book-open"></i></span>
       <span class="link-label">${escapeHtml(title)}</span>
-    </a>
+    </button>
   `
 }
 
@@ -78,8 +79,8 @@ async function render() {
 }
 
 document.readyState === 'loading'
-  ? document.addEventListener('DOMContentLoaded', render)
-  : render()
+  ? document.addEventListener('DOMContentLoaded', () => { render(); initPdfViewer() })
+  : (render(), initPdfViewer())
 
 /* ─── ANIMAÇÃO DE PARTÍCULAS NO FUNDO ─── */
 ;(function initParticles() {

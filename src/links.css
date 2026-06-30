@@ -79,6 +79,8 @@
   font-family: var(--fb); font-size: 14px; font-weight: 500;
   box-shadow: 0 2px 8px rgba(0,0,0,.12);
   transition: background var(--t), transform var(--t), box-shadow var(--t);
+  cursor: pointer; text-decoration: none; text-align: left;
+  -webkit-appearance: none; appearance: none;
 }
 .link-btn:hover {
   background: #d2d2d2;
