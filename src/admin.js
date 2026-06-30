@@ -630,22 +630,31 @@ function renderLinksList() {
       </div>
       <div class="al-card-body">
         <div class="al-card-body-row">
-          <div class="al-icon-cell">
-            <div class="al-icon-row">
-              <select class="al-icon">
-                ${optionsHtml}
-                <option value="__custom__" ${!isKnown ? 'selected' : ''}>Outro (avançado)</option>
-              </select>
-            </div>
-            <input type="text" class="al-icon-custom ${isKnown ? 'hidden' : ''}" placeholder="nome-do-ícone (lucide.dev/icons)" value="${escapeAttr(isKnown ? '' : link.icon)}" />
+          <div class="al-field-group">
+            <span class="al-field-label">Ícone</span>
+            <select class="al-icon">
+              ${optionsHtml}
+              <option value="__custom__" ${!isKnown ? 'selected' : ''}>Outro (avançado)</option>
+            </select>
+            <input type="text" class="al-icon-custom ${isKnown ? 'hidden' : ''}" placeholder="ex: star, globe, heart…" value="${escapeAttr(isKnown ? '' : link.icon)}" />
           </div>
-          <label class="al-primary">
-            <input type="checkbox" class="al-primary-check" ${link.primary ? 'checked' : ''} />
-            Destaque (botão em azul)
-          </label>
+          <div class="al-field-group">
+            <span class="al-field-label">Visibilidade</span>
+            <label class="al-primary-pill">
+              <input type="checkbox" class="al-primary-check" ${link.primary ? 'checked' : ''} />
+              <span class="al-pill-dot"></span>
+              <span>Destacar botão</span>
+            </label>
+          </div>
         </div>
-        <input type="text" class="al-label" placeholder="Texto do botão" value="${escapeAttr(link.label)}" />
-        <input type="text" class="al-url" placeholder="https://... ou /index.html#secao" value="${escapeAttr(link.url)}" />
+        <div class="al-field-group">
+          <span class="al-field-label">Texto do botão</span>
+          <input type="text" class="al-label" placeholder="Ex.: Agendar consulta" value="${escapeAttr(link.label)}" />
+        </div>
+        <div class="al-field-group">
+          <span class="al-field-label">Link</span>
+          <input type="text" class="al-url" placeholder="https://... ou /index.html#secao" value="${escapeAttr(link.url)}" />
+        </div>
       </div>
     </div>
   `

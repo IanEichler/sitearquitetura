@@ -328,20 +328,28 @@
 .al-card-header .al-remove svg { width: 14px; height: 14px; }
 .al-card-header .al-remove:hover { background: var(--adm-danger-soft); border-color: var(--adm-danger); color: var(--adm-danger); }
 
-.al-card-body { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
-.al-card-body-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.al-card-body {
+  padding: 16px; display: flex; flex-direction: column; gap: 14px;
+  background: #F7F7F8; border-radius: 0 0 var(--adm-r) var(--adm-r);
+}
+.al-card-body-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+
+/* grupos de campo com label */
+.al-field-group { display: flex; flex-direction: column; gap: 5px; }
+.al-field-label {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--adm-text-muted);
+}
 
 /* seletor de ícone */
-.al-icon-cell { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.al-icon-row { display: flex; align-items: center; gap: 8px; }
 .al-icon-preview {
   flex-shrink: 0; width: 32px; height: 32px; border-radius: var(--adm-rs);
   background: var(--adm-primary); display: flex; align-items: center; justify-content: center;
 }
 .al-icon-preview svg { width: 16px; height: 16px; stroke: #fff; stroke-width: 1.8; }
 select.al-icon {
-  flex: 1; min-width: 0; padding: 9px 8px; border-radius: var(--adm-rs);
-  border: 1px solid var(--adm-border); font-family: var(--fb); font-size: 12px;
+  width: 100%; padding: 9px 10px; border-radius: var(--adm-rs);
+  border: 1px solid var(--adm-border); font-family: var(--fb); font-size: 12.5px;
   background: var(--adm-surface); color: var(--adm-text); outline: none;
   transition: border-color var(--t);
 }
@@ -349,7 +357,7 @@ select.al-icon:focus { border-color: var(--adm-primary); }
 .al-icon-custom {
   width: 100%; padding: 9px 12px; border-radius: var(--adm-rs);
   border: 1px solid var(--adm-border); font-family: var(--fb); font-size: 13px;
-  outline: none; transition: border-color var(--t);
+  outline: none; transition: border-color var(--t); background: var(--adm-surface);
 }
 .al-icon-custom:focus { border-color: var(--adm-primary); }
 
@@ -359,11 +367,25 @@ select.al-icon:focus { border-color: var(--adm-primary); }
   outline: none; transition: border-color var(--t); background: var(--adm-surface); color: var(--adm-text);
 }
 .al-card-body input[type="text"]:focus { border-color: var(--adm-primary); }
-.al-primary {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 12px; font-weight: 600; color: var(--adm-text-muted);
+
+/* toggle "Destacar" — pill estilizado */
+.al-primary-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px; border-radius: 999px;
+  border: 1.5px solid var(--adm-border); background: var(--adm-surface);
+  font-size: 12.5px; font-weight: 600; color: var(--adm-text-muted);
+  cursor: pointer; transition: all .15s; user-select: none; align-self: flex-start;
 }
-.al-primary input { width: 16px; height: 16px; }
+.al-primary-pill input { display: none; }
+.al-pill-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--adm-border);
+  transition: background .15s; flex-shrink: 0;
+}
+.al-primary-pill:has(.al-primary-check:checked) {
+  background: #EBF2FF; border-color: #004AAD; color: #004AAD;
+}
+.al-primary-pill:has(.al-primary-check:checked) .al-pill-dot { background: #004AAD; }
+.al-primary { display: none; }
 
 /* ── E-BOOK ACCORDION ── */
 .admin-ebook-card {
@@ -661,6 +683,7 @@ select.al-icon:focus { border-color: var(--adm-primary); }
     justify-content: space-between;
   }
   .al-card-body-row { grid-template-columns: 1fr; }
+  .al-primary-pill { align-self: stretch; justify-content: center; }
   .admin-toasts { left: 18px; right: 18px; top: 18px; }
   .admin-toast { max-width: none; }
 }
