@@ -58,19 +58,13 @@ function renderAction(ebook) {
         </button>
       `
     }
-    const isDataUrl = ebook.downloadUrl.startsWith('data:')
-    const isExternal = !isInternalUrl(ebook.downloadUrl)
-    if (isDataUrl) {
-      return `
-        <button type="button" class="btn btn-primary btn-full ae-download-blob" data-url="${escapeHtml(ebook.downloadUrl)}" data-filename="${escapeHtml((ebook.title || 'ebook').replace(/\s+/g,'-').toLowerCase())}.pdf">
-          <i data-lucide="download"></i> Baixar e-book gratuito
-        </button>
-      `
-    }
+    const filename = `${(ebook.title || 'ebook').replace(/\s+/g, '-').toLowerCase()}.pdf`
     return `
-      <a href="${escapeHtml(downloadUrl)}" download class="btn btn-primary btn-full" ${isExternal ? 'target="_blank" rel="noopener"' : ''}>
+      <button type="button" class="btn btn-primary btn-full ae-download-any"
+        data-url="${escapeHtml(ebook.downloadUrl)}"
+        data-filename="${escapeHtml(filename)}">
         <i data-lucide="download"></i> Baixar e-book gratuito
-      </a>
+      </button>
     `
   }
 
@@ -166,22 +160,47 @@ document.readyState === 'loading'
   ? document.addEventListener('DOMContentLoaded', () => { render(); initLightbox() })
   : (render(), initLightbox())
 
-/* download de PDFs armazenados como data URL */
-document.addEventListener('click', (e) => {
-  const btn = e.target.closest('.ae-download-blob')
-  if (!btn) return
-  const dataUrl = btn.dataset.url
+/* download universal — data URL ou URL externa (Supabase Storage, etc.) */
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('.ae-download-any')
+  if (!btn || btn.disabled) return
+
+  const rawUrl = btn.dataset.url
   const filename = btn.dataset.filename || 'ebook.pdf'
-  const [header, b64] = dataUrl.split(',')
-  const mime = header.match(/:(.*?);/)?.[1] || 'application/pdf'
-  const bytes = atob(b64)
-  const arr = new Uint8Array(bytes.length)
-  for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i)
-  const blob = new Blob([arr], { type: mime })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url; a.download = filename
-  document.body.appendChild(a); a.click()
-  document.body.removeChild(a)
-  setTimeout(() => URL.revokeObjectURL(url), 1000)
+
+  const originalHtml = btn.innerHTML
+  btn.disabled = true
+  btn.innerHTML = '<i data-lucide="loader-2"></i> Baixando…'
+  window.lucide?.createIcons()
+
+  try {
+    let blob
+
+    if (rawUrl.startsWith('data:')) {
+      const [header, b64] = rawUrl.split(',')
+      const mime = header.match(/:(.*?);/)?.[1] || 'application/pdf'
+      const bytes = atob(b64)
+      const arr = new Uint8Array(bytes.length)
+      for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i)
+      blob = new Blob([arr], { type: mime })
+    } else {
+      const res = await fetch(rawUrl)
+      blob = await res.blob()
+    }
+
+    const objectUrl = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = objectUrl
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 2000)
+  } catch {
+    window.open(rawUrl, '_blank')
+  } finally {
+    btn.disabled = false
+    btn.innerHTML = originalHtml
+    window.lucide?.createIcons()
+  }
 })
