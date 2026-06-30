@@ -833,6 +833,49 @@ button:focus, .btn:focus {
 }
 .img-lightbox-close:hover { background: rgba(255,255,255,.25); }
 
+/* ─────────────── VISUALIZADOR DE PDF ─────────────── */
+.pdf-viewer {
+  position: fixed; inset: 0; z-index: 99998;
+  display: flex; flex-direction: column;
+  background: #1a1a2e;
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s ease;
+}
+.pdf-viewer.open { opacity: 1; pointer-events: all; }
+
+.pdf-viewer-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; background: #111827;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  flex-shrink: 0; gap: 16px;
+}
+.pdf-viewer-title {
+  color: #F0F4FF; font-size: 14px; font-weight: 600;
+  font-family: var(--fb); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.pdf-viewer-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+.pdf-viewer-download {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 16px; border-radius: 8px;
+  background: #004AAD; color: #fff; border: none; cursor: pointer;
+  font-family: var(--fb); font-size: 13px; font-weight: 600;
+  transition: background .15s;
+}
+.pdf-viewer-download:hover { background: #0057cc; }
+.pdf-viewer-download:disabled { opacity: .6; cursor: default; }
+
+.pdf-viewer-close {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 8px;
+  background: rgba(255,255,255,.08); border: none; cursor: pointer; color: #fff;
+  transition: background .15s;
+}
+.pdf-viewer-close:hover { background: rgba(255,255,255,.18); }
+
+.pdf-viewer-body { flex: 1; min-height: 0; }
+.pdf-viewer-frame { width: 100%; height: 100%; border: 0; display: block; }
+
 .ebook-cover-tag {
   align-self: flex-start;
   font-family: var(--fb); font-size: 10px; font-weight: 600;
