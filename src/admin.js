@@ -1,18 +1,8 @@
-import { loadData, saveData, resetData, defaultProfile, defaultLinks, iconOptions } from './links-data.js'
-import { loadEbooks, saveEbooks, resetEbooks, defaultEbooks } from './ebooks-data.js'
+import { loadData, defaultProfile, defaultLinks, iconOptions } from './links-data.js'
+import { loadEbooks, defaultEbooks } from './ebooks-data.js'
+import { supabaseAdmin } from './supabase.js'
 
-const SITE_CONFIG_KEY = 'bv-site-config'
-function loadSiteConfig() {
-  try { return JSON.parse(localStorage.getItem(SITE_CONFIG_KEY)) || {} } catch { return {} }
-}
-function saveSiteConfig(cfg) { localStorage.setItem(SITE_CONFIG_KEY, JSON.stringify(cfg)) }
-
-/* Senha de acesso ao painel — não fica em texto puro no código,
-   apenas o hash (SHA-256) dela. Para trocar a senha, gere o novo
-   hash (ex.: no console do navegador):
-     crypto.subtle.digest('SHA-256', new TextEncoder().encode('NOVA_SENHA'))
-       .then(b => console.log([...new Uint8Array(b)].map(x => x.toString(16).padStart(2,'0')).join('')))
-   e substitua o valor abaixo. */
+/* ─── SENHA DE ACESSO ─── */
 const ADMIN_PASSWORD_HASH = '066c28b1fb6067337ba74be3cff1dc3b7c50fea80ec958673fe68f8113ab6c97'
 const AUTH_KEY = 'bv-admin-auth'
 
@@ -21,11 +11,11 @@ async function hashPassword(text) {
   return [...new Uint8Array(buffer)].map(b => b.toString(16).padStart(2, '0')).join('')
 }
 
-const loginScreen  = document.getElementById('adminLogin')
-const editorScreen = document.getElementById('adminEditor')
-const loginForm    = document.getElementById('loginForm')
+const loginScreen   = document.getElementById('adminLogin')
+const editorScreen  = document.getElementById('adminEditor')
+const loginForm     = document.getElementById('loginForm')
 const passwordInput = document.getElementById('adminPassword')
-const loginError   = document.getElementById('adminError')
+const loginError    = document.getElementById('adminError')
 
 const sidebar        = document.getElementById('adminSidebar')
 const sidebarOverlay = document.getElementById('sidebarOverlay')
@@ -35,9 +25,9 @@ const panels         = document.querySelectorAll('.admin-panel')
 const topbarTitle    = document.getElementById('topbarTitle')
 const previewToggle  = document.getElementById('previewToggle')
 
-const previewModal       = document.getElementById('previewModal')
-const previewModalFrame  = document.getElementById('previewModalFrame')
-const previewModalClose  = document.getElementById('previewModalClose')
+const previewModal      = document.getElementById('previewModal')
+const previewModalFrame = document.getElementById('previewModalFrame')
+const previewModalClose = document.getElementById('previewModalClose')
 
 const statLinks  = document.getElementById('statLinks')
 const statEbooks = document.getElementById('statEbooks')
@@ -61,21 +51,68 @@ const addEbookBtn      = document.getElementById('addEbookBtn')
 const resetBtn  = document.getElementById('resetBtn')
 const logoutBtn = document.getElementById('logoutBtn')
 
-const saveBtn        = document.getElementById('saveBtn')
-const savebarStatus  = document.getElementById('savebarStatus')
-const adminToasts    = document.getElementById('adminToasts')
+const saveBtn       = document.getElementById('saveBtn')
+const savebarStatus = document.getElementById('savebarStatus')
+const adminToasts   = document.getElementById('adminToasts')
 
-let state = loadData()
-let ebooksState = loadEbooks()
+let state = { profile: { ...defaultProfile }, links: [] }
+let ebooksState = []
+let siteConfig = { sobrePhoto: '' }
 let expandedEbookIndex = null
+
+/* ─── UPLOAD PARA SUPABASE STORAGE ─── */
+
+async function uploadToStorage(dataUrl, bucket, filename) {
+  const [header, base64] = dataUrl.split(',')
+  const mime = header.match(/:(.*?);/)?.[1] || 'image/jpeg'
+  const bytes = atob(base64)
+  const arr = new Uint8Array(bytes.length)
+  for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i)
+  const blob = new Blob([arr], { type: mime })
+
+  const { error } = await supabaseAdmin.storage.from(bucket).upload(filename, blob, {
+    upsert: true,
+    contentType: mime,
+  })
+  if (error) throw error
+
+  const { data: { publicUrl } } = supabaseAdmin.storage.from(bucket).getPublicUrl(filename)
+  return publicUrl
+}
+
+async function uploadPdfToStorage(file) {
+  const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '-')
+  const filename = `${Date.now()}-${safeName}`
+  const { error } = await supabaseAdmin.storage.from('ebooks-files').upload(filename, file, {
+    upsert: false,
+    contentType: 'application/pdf',
+  })
+  if (error) throw error
+
+  const { data: { publicUrl } } = supabaseAdmin.storage.from('ebooks-files').getPublicUrl(filename)
+  return publicUrl
+}
 
 /* ─── LOGIN ─── */
 
-function showEditor() {
+async function initData() {
+  const [linkData, ebooks] = await Promise.all([loadData(), loadEbooks()])
+  state = { profile: linkData.profile, links: linkData.links }
+  ebooksState = ebooks
+  siteConfig = { sobrePhoto: linkData.sobrePhoto || '' }
+  if (siteConfig.sobrePhoto) sobrePhotoPreview.src = siteConfig.sobrePhoto
+  renderEditor()
+}
+
+async function showEditor() {
   loginScreen.classList.add('hidden')
   editorScreen.classList.remove('hidden')
   editorScreen.classList.add('loading')
-  renderEditor()
+  try {
+    await initData()
+  } catch {
+    showToast('Erro ao carregar dados. Verifique a conexão.', 'error')
+  }
   showPanel('dashboard')
   markClean()
   setTimeout(() => editorScreen.classList.remove('loading'), 400)
@@ -172,13 +209,12 @@ function showToast(message, type = 'success') {
   setTimeout(() => {
     el.classList.remove('show')
     setTimeout(() => el.remove(), 250)
-  }, 3000)
+  }, 3500)
 }
 
-/* ─── ESTADO "SUJO" / AUTO-SAVE ─── */
+/* ─── ESTADO "SUJO" ─── */
 
 let isDirty = false
-let persistTimer = null
 
 function markDirty() {
   isDirty = true
@@ -194,42 +230,78 @@ function markClean() {
 
 function syncProfileFromInputs() {
   state.profile = {
-    name: profileNameInput.value.trim(),
+    name:     profileNameInput.value.trim(),
     subtitle: profileSubtitleInput.value,
-    avatar: profileAvatarInput.value.trim(),
+    avatar:   profileAvatarInput.value.trim(),
   }
 }
 
-function persistNow() {
+/* ─── SALVAR NO SUPABASE ─── */
+
+saveBtn.addEventListener('click', async () => {
   syncProfileFromInputs()
   syncLinksFromDom()
   syncEbooksFromDom()
-  try {
-    saveData(state)
-    saveEbooks(ebooksState)
-  } catch {
-    /* armazenamento cheio — o erro é tratado de novo ao clicar em Salvar */
-  }
-}
 
-function schedulePersist() {
-  markDirty()
-  clearTimeout(persistTimer)
-  persistTimer = setTimeout(persistNow, 300)
-}
+  saveBtn.disabled = true
+  savebarStatus.textContent = 'Salvando...'
 
-saveBtn.addEventListener('click', () => {
-  clearTimeout(persistTimer)
-  syncProfileFromInputs()
-  syncLinksFromDom()
-  syncEbooksFromDom()
   try {
-    saveData(state)
-    saveEbooks(ebooksState)
+    // 1. Perfil / config
+    await supabaseAdmin.from('site_config').upsert({
+      id: 'main',
+      profile_name:     state.profile.name,
+      profile_subtitle: state.profile.subtitle,
+      profile_avatar:   state.profile.avatar,
+      sobre_photo:      siteConfig.sobrePhoto || '',
+    })
+
+    // 2. Links — substitui todos
+    await supabaseAdmin.from('links').delete().gt('position', -1)
+    if (state.links.length) {
+      await supabaseAdmin.from('links').insert(
+        state.links.map((l, i) => ({
+          position:   i,
+          label:      l.label,
+          url:        l.url,
+          icon:       l.icon || 'link',
+          is_primary: l.primary || false,
+        }))
+      )
+    }
+
+    // 3. E-books — substitui todos
+    await supabaseAdmin.from('ebooks').delete().gt('position', -1)
+    if (ebooksState.length) {
+      await supabaseAdmin.from('ebooks').insert(
+        ebooksState.map((e, i) => ({
+          position:     i,
+          title:        e.title || '',
+          description:  e.description || '',
+          status:       e.status || 'free',
+          price:        e.price || '',
+          cover_url:    e.cover || '',
+          download_url: e.downloadUrl || '',
+          show_in_links: e.showInLinks !== false,
+        }))
+      )
+    }
+
     markClean()
-    showToast('Alterações salvas')
-  } catch {
-    showToast('Não foi possível salvar — os arquivos enviados são muito grandes. Use arquivos menores ou um link.', 'error')
+    showToast('Alterações salvas e publicadas')
+
+    // Recarrega iframes de preview para refletir as mudanças
+    document.querySelectorAll('.admin-preview-frame').forEach(iframe => {
+      const src = iframe.src
+      iframe.src = ''
+      setTimeout(() => { iframe.src = src }, 100)
+    })
+
+  } catch (err) {
+    showToast('Erro ao salvar: ' + (err.message || 'verifique a conexão'), 'error')
+  } finally {
+    saveBtn.disabled = false
+    if (isDirty) savebarStatus.classList.add('dirty')
   }
 })
 
@@ -243,21 +315,19 @@ function updateDashboardStats() {
 /* ─── RENDER GERAL ─── */
 
 function renderEditor() {
-  profileNameInput.value = state.profile.name
+  profileNameInput.value     = state.profile.name
   profileSubtitleInput.value = state.profile.subtitle
-  profileAvatarInput.value = state.profile.avatar
+  profileAvatarInput.value   = state.profile.avatar
   updateAvatarDropzone(state.profile.avatar)
   renderLinksList()
   renderEbooksList()
   updateDashboardStats()
 }
 
-/* Lê um arquivo escolhido pelo usuário e devolve uma data URL,
-   para guardar o arquivo direto nos dados (sem precisar de servidor). */
 function readFileAsDataUrl(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
-    reader.onload = () => resolve(reader.result)
+    reader.onload  = () => resolve(reader.result)
     reader.onerror = () => reject(reader.error)
     reader.readAsDataURL(file)
   })
@@ -320,9 +390,9 @@ const cropModal = (() => {
   `
   document.body.appendChild(el)
 
-  const stage    = el.querySelector('#admCropStage')
-  const img      = el.querySelector('#admCropImg')
-  const overlay  = el.querySelector('#admCropOverlay')
+  const stage      = el.querySelector('#admCropStage')
+  const img        = el.querySelector('#admCropImg')
+  const overlay    = el.querySelector('#admCropOverlay')
   const zoomSlider = el.querySelector('#admCropZoom')
   const cancelBtn  = el.querySelector('#admCropCancel')
   const confirmBtn = el.querySelector('#admCropConfirm')
@@ -393,9 +463,6 @@ const cropModal = (() => {
     const sh = stageRect.height
     const naturalW = img.naturalWidth
     const naturalH = img.naturalHeight
-    const rendered = scale * Math.min(sw / naturalW, sh / naturalH) * Math.min(naturalW, naturalH) / Math.min(naturalW, naturalH)
-    const rw = naturalW * scale * (sw / (naturalW < naturalH ? naturalW : naturalW))
-    const rh = naturalH * scale * (sh / (naturalH < naturalW ? naturalH : naturalH))
     const displayScale = scale * Math.min(sw / naturalW, sh / naturalH)
     const dw = naturalW * displayScale
     const dh = naturalH * displayScale
@@ -434,19 +501,27 @@ const cropModal = (() => {
 async function handleAvatarFile(file) {
   if (!file) return
   const dataUrl = await readFileAsDataUrl(file)
-  cropModal.open(dataUrl, { circular: true, w: 400, h: 400, callback: (cropped) => {
-    profileAvatarInput.value = cropped
-    updateAvatarDropzone(cropped)
-    schedulePersist()
+  cropModal.open(dataUrl, { circular: true, w: 400, h: 400, callback: async (cropped) => {
+    try {
+      showToast('Enviando foto de perfil...')
+      const url = await uploadToStorage(cropped, 'images', `avatar-${Date.now()}.jpg`)
+      profileAvatarInput.value = url
+      updateAvatarDropzone(url)
+    } catch {
+      profileAvatarInput.value = cropped
+      updateAvatarDropzone(cropped)
+      showToast('Não foi possível enviar para o servidor — foto salva localmente', 'error')
+    }
+    markDirty()
   }})
 }
 
-profileNameInput.addEventListener('input', schedulePersist)
-profileSubtitleInput.addEventListener('input', schedulePersist)
+profileNameInput.addEventListener('input', markDirty)
+profileSubtitleInput.addEventListener('input', markDirty)
 
 profileAvatarInput.addEventListener('input', () => {
   updateAvatarDropzone(profileAvatarInput.value)
-  schedulePersist()
+  markDirty()
 })
 
 profileAvatarFile.addEventListener('change', () => {
@@ -461,17 +536,20 @@ const sobrePhotoPreview = document.getElementById('sobrePhotoPreview')
 const sobrePhotoFile    = document.getElementById('sobrePhotoFile')
 const sobrePhotoRemove  = document.getElementById('sobrePhotoRemove')
 
-;(function initSobrePhoto() {
-  const cfg = loadSiteConfig()
-  if (cfg.sobrePhoto) sobrePhotoPreview.src = cfg.sobrePhoto
-})()
-
 sobrePhotoFile?.addEventListener('change', async () => {
   const file = sobrePhotoFile.files[0]
   if (!file) return
-  cropModal.open(await readFileAsDataUrl(file), { circular: false, w: 800, h: 1000, callback: (cropped) => {
-    sobrePhotoPreview.src = cropped
-    saveSiteConfig({ ...loadSiteConfig(), sobrePhoto: cropped })
+  cropModal.open(await readFileAsDataUrl(file), { circular: false, w: 800, h: 1000, callback: async (cropped) => {
+    try {
+      showToast('Enviando foto do site...')
+      const url = await uploadToStorage(cropped, 'images', `sobre-${Date.now()}.jpg`)
+      sobrePhotoPreview.src = url
+      siteConfig.sobrePhoto = url
+    } catch {
+      sobrePhotoPreview.src = cropped
+      siteConfig.sobrePhoto = cropped
+      showToast('Não foi possível enviar para o servidor — foto salva localmente', 'error')
+    }
     sobrePhotoFile.value = ''
     markDirty()
   }})
@@ -479,16 +557,14 @@ sobrePhotoFile?.addEventListener('change', async () => {
 
 sobrePhotoRemove?.addEventListener('click', () => {
   sobrePhotoPreview.src = '/eu-sou-a-bianca.jpeg'
-  const cfg = loadSiteConfig()
-  delete cfg.sobrePhoto
-  saveSiteConfig(cfg)
+  siteConfig.sobrePhoto = ''
   markDirty()
 })
 
 profileAvatarRemove.addEventListener('click', () => {
   profileAvatarInput.value = ''
   updateAvatarDropzone('')
-  schedulePersist()
+  markDirty()
 })
 
 avatarDropzone.addEventListener('click', () => {
@@ -587,7 +663,7 @@ function syncLinksFromDom() {
     return {
       icon,
       label: row.querySelector('.al-label').value.trim(),
-      url: row.querySelector('.al-url').value.trim(),
+      url:   row.querySelector('.al-url').value.trim(),
       primary: row.querySelector('.al-primary-check').checked,
     }
   })
@@ -607,7 +683,7 @@ linksEditorList.addEventListener('input', (e) => {
     updateIconPreview(row, e.target.value.trim())
   }
 
-  schedulePersist()
+  markDirty()
 })
 
 linksEditorList.addEventListener('change', (e) => {
@@ -624,7 +700,6 @@ linksEditorList.addEventListener('change', (e) => {
     linksEditorList.children[index]?.querySelector('.al-icon-custom')?.focus()
   }
 
-  persistNow()
   markDirty()
 })
 
@@ -636,7 +711,6 @@ linksEditorList.addEventListener('click', (e) => {
   syncLinksFromDom()
   state.links.splice(index, 1)
   renderLinksList()
-  persistNow()
   markDirty()
   updateDashboardStats()
 })
@@ -645,7 +719,6 @@ addLinkBtn.addEventListener('click', () => {
   syncLinksFromDom()
   state.links.push({ icon: 'link', label: 'Novo link', url: 'https://', primary: false })
   renderLinksList()
-  persistNow()
   markDirty()
   updateDashboardStats()
   showToast('Link adicionado')
@@ -653,17 +726,8 @@ addLinkBtn.addEventListener('click', () => {
 
 /* ─── E-BOOKS ─── */
 
-const EBOOK_STATUS_LABELS = {
-  free: 'Gratuito',
-  paid: 'Pago',
-  soon: 'Em breve',
-}
-
-const EBOOK_STATUS_ICONS = {
-  free: 'download',
-  paid: 'shopping-cart',
-  soon: 'clock',
-}
+const EBOOK_STATUS_LABELS = { free: 'Gratuito', paid: 'Pago', soon: 'Em breve' }
+const EBOOK_STATUS_ICONS  = { free: 'download', paid: 'shopping-cart', soon: 'clock' }
 
 function renderEbooksList() {
   ebooksEditorList.innerHTML = ebooksState.map((ebook, i) => {
@@ -676,6 +740,8 @@ function renderEbooksList() {
     const thumb = ebook.cover
       ? `<img class="ae-thumb" src="${escapeAttr(ebook.cover)}" alt="" />`
       : `<span class="ae-thumb-placeholder"><i data-lucide="${EBOOK_STATUS_ICONS[ebook.status] ?? 'file'}"></i></span>`
+
+    const dlIsData = (ebook.downloadUrl || '').startsWith('data:')
 
     return `
     <div class="admin-ebook-card ${isExpanded ? 'expanded' : ''}" data-index="${i}">
@@ -756,23 +822,25 @@ function renderEbooksList() {
             <div class="admin-field">
               <label>Arquivo / Link</label>
               <div class="ae-download-tabs">
-                <button type="button" class="ae-dl-tab ${!ebook.downloadUrl.startsWith('data:') ? 'active' : ''}" data-tab="link">
+                <button type="button" class="ae-dl-tab ${!dlIsData ? 'active' : ''}" data-tab="link">
                   <i data-lucide="link"></i> Link
                 </button>
-                <button type="button" class="ae-dl-tab ${ebook.downloadUrl.startsWith('data:') ? 'active' : ''}" data-tab="file">
+                <button type="button" class="ae-dl-tab ${dlIsData ? 'active' : ''}" data-tab="file">
                   <i data-lucide="file-text"></i> PDF
                 </button>
               </div>
               <input type="hidden" class="ae-download" value="${escapeAttr(ebook.downloadUrl)}" />
-              <div class="ae-dl-link-wrap ${ebook.downloadUrl.startsWith('data:') ? 'hidden' : ''}">
-                <input type="text" class="ae-download-link-input" placeholder="https://... ou /ebooks/arquivo.pdf" value="${escapeAttr(ebook.downloadUrl.startsWith('data:') ? '' : ebook.downloadUrl)}" />
+              <div class="ae-dl-link-wrap ${dlIsData ? 'hidden' : ''}">
+                <input type="text" class="ae-download-link-input" placeholder="https://... ou /ebooks/arquivo.pdf" value="${escapeAttr(dlIsData ? '' : ebook.downloadUrl)}" />
               </div>
-              <div class="ae-dl-file-wrap ${ebook.downloadUrl.startsWith('data:') ? '' : 'hidden'}">
-                ${ebook.downloadUrl.startsWith('data:')
+              <div class="ae-dl-file-wrap ${dlIsData ? '' : 'hidden'}">
+                ${dlIsData
                   ? `<div class="ae-dl-file-badge"><i data-lucide="check-circle"></i> PDF enviado <button type="button" class="ae-dl-file-remove">✕</button></div>`
-                  : ''}
+                  : (ebook.downloadUrl && !dlIsData && ebook.downloadUrl.startsWith('http')
+                    ? `<div class="ae-dl-file-badge"><i data-lucide="check-circle"></i> PDF no servidor <button type="button" class="ae-dl-file-remove">✕</button></div>`
+                    : '')}
                 <label class="admin-upload-btn">
-                  <i data-lucide="upload"></i> ${ebook.downloadUrl.startsWith('data:') ? 'Substituir PDF' : 'Enviar PDF'}
+                  <i data-lucide="upload"></i> ${dlIsData ? 'Substituir PDF' : 'Enviar PDF'}
                   <input type="file" class="ae-download-file" accept="application/pdf" />
                 </label>
               </div>
@@ -791,11 +859,11 @@ function renderEbooksList() {
 function syncEbooksFromDom() {
   const rows = ebooksEditorList.querySelectorAll('.admin-ebook-card')
   ebooksState = Array.from(rows).map(row => ({
-    status: row.querySelector('.ae-status').value,
-    title: row.querySelector('.ae-title').value.trim(),
+    status:      row.querySelector('.ae-status').value,
+    title:       row.querySelector('.ae-title').value.trim(),
     description: row.querySelector('.ae-description').value.trim(),
-    price: row.querySelector('.ae-price').value.trim(),
-    cover: row.querySelector('.ae-cover').value.trim(),
+    price:       row.querySelector('.ae-price').value.trim(),
+    cover:       row.querySelector('.ae-cover').value.trim(),
     downloadUrl: row.querySelector('.ae-download').value.trim(),
     showInLinks: row.querySelector('.ae-show-links').checked,
   }))
@@ -810,13 +878,12 @@ ebooksEditorList.addEventListener('input', (e) => {
   }
   if (e.target.classList.contains('ae-download-link-input')) {
     row.querySelector('.ae-download').value = e.target.value.trim()
-    schedulePersist()
   }
   if (e.target.classList.contains('ae-title')) {
     row.querySelector('.ae-header-title strong').textContent = e.target.value.trim() || 'Novo e-book'
   }
 
-  schedulePersist()
+  markDirty()
 })
 
 ebooksEditorList.addEventListener('change', async (e) => {
@@ -828,21 +895,39 @@ ebooksEditorList.addEventListener('change', async (e) => {
     if (!file) return
     const dataUrl = await readFileAsDataUrl(file)
     e.target.value = ''
-    cropModal.open(dataUrl, { circular: false, w: 300, h: 400, callback: (cropped) => {
-      row.querySelector('.ae-cover').value = cropped
-      updateImagePreview(row.querySelector('.ae-cover-preview'), row.querySelector('.ae-cover-remove'), cropped)
+    cropModal.open(dataUrl, { circular: false, w: 300, h: 400, callback: async (cropped) => {
+      try {
+        showToast('Enviando capa...')
+        const url = await uploadToStorage(cropped, 'images', `ebook-cover-${Date.now()}.jpg`)
+        row.querySelector('.ae-cover').value = url
+        updateImagePreview(row.querySelector('.ae-cover-preview'), row.querySelector('.ae-cover-remove'), url)
+      } catch {
+        row.querySelector('.ae-cover').value = cropped
+        updateImagePreview(row.querySelector('.ae-cover-preview'), row.querySelector('.ae-cover-remove'), cropped)
+      }
       syncEbooksFromDom()
       renderEbooksList()
-      persistNow()
       markDirty()
     }})
     return
-  } else if (e.target.classList.contains('ae-download-file')) {
+  }
+
+  if (e.target.classList.contains('ae-download-file')) {
     const file = e.target.files[0]
     if (!file) return
-    const dataUrl = await readFileAsDataUrl(file)
-    row.querySelector('.ae-download').value = dataUrl
     e.target.value = ''
+
+    showToast('Enviando PDF...')
+    let downloadValue = ''
+    try {
+      downloadValue = await uploadPdfToStorage(file)
+    } catch {
+      downloadValue = await readFileAsDataUrl(file)
+      showToast('Não foi possível enviar ao servidor — PDF salvo localmente', 'error')
+    }
+
+    row.querySelector('.ae-download').value = downloadValue
+    // atualiza badge
     const wrap = row.querySelector('.ae-dl-file-wrap')
     if (!wrap.querySelector('.ae-dl-file-badge')) {
       const badge = document.createElement('div')
@@ -851,15 +936,16 @@ ebooksEditorList.addEventListener('change', async (e) => {
       wrap.insertBefore(badge, wrap.querySelector('label'))
       window.lucide?.createIcons()
     }
-    wrap.querySelector('label i').setAttribute('data-lucide', 'upload')
-    wrap.querySelector('label').childNodes[1].textContent = ' Substituir PDF'
+    wrap.querySelector('label i')?.setAttribute('data-lucide', 'upload')
+    const labelNode = wrap.querySelector('label')?.childNodes
+    if (labelNode?.[1]) labelNode[1].textContent = ' Substituir PDF'
 
-    /* ─── extrai título e descrição do PDF ─── */
+    /* extrai título e descrição do PDF via PDF.js */
     if (window.pdfjsLib) {
       try {
-        const pdf = await window.pdfjsLib.getDocument(dataUrl).promise
+        const pdfSrc = downloadValue.startsWith('data:') ? downloadValue : downloadValue
+        const pdf = await window.pdfjsLib.getDocument(pdfSrc).promise
 
-        /* título dos metadados */
         const meta = await pdf.getMetadata().catch(() => ({}))
         const pdfTitle = meta?.info?.Title?.trim()
         const titleInput = row.querySelector('.ae-title')
@@ -868,7 +954,6 @@ ebooksEditorList.addEventListener('change', async (e) => {
           row.querySelector('.ae-header-title strong').textContent = pdfTitle
         }
 
-        /* texto das primeiras 2 páginas para gerar descrição */
         const descInput = row.querySelector('.ae-description')
         if (!descInput.value.trim()) {
           let fullText = ''
@@ -885,13 +970,17 @@ ebooksEditorList.addEventListener('change', async (e) => {
         }
       } catch {}
     }
-  } else if (!e.target.classList.contains('ae-status')) {
+
+    syncEbooksFromDom()
+    renderEbooksList()
+    markDirty()
     return
   }
 
+  if (!e.target.classList.contains('ae-status')) return
+
   syncEbooksFromDom()
   renderEbooksList()
-  persistNow()
   markDirty()
 })
 
@@ -914,22 +1003,18 @@ ebooksEditorList.addEventListener('click', (e) => {
     return
   }
 
-  /* remover arquivo enviado */
   if (e.target.closest('.ae-dl-file-remove')) {
     row.querySelector('.ae-download').value = ''
-    const wrap = row.querySelector('.ae-dl-file-wrap')
-    wrap.querySelector('.ae-dl-file-badge')?.remove()
+    row.querySelector('.ae-dl-file-badge')?.remove()
     syncEbooksFromDom()
-    persistNow()
     markDirty()
     return
   }
 
   if (e.target.closest('.ae-cover-remove')) {
-    const coverInput = row.querySelector('.ae-cover')
-    coverInput.value = ''
+    row.querySelector('.ae-cover').value = ''
     updateImagePreview(row.querySelector('.ae-cover-preview'), row.querySelector('.ae-cover-remove'), '')
-    schedulePersist()
+    markDirty()
     return
   }
 
@@ -952,17 +1037,25 @@ ebooksEditorList.addEventListener('click', (e) => {
         canvas.height = viewport.height
         await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise
         const dataUrl = canvas.toDataURL('image/jpeg', 0.92)
-        row.querySelector('.ae-cover').value = dataUrl
-        updateImagePreview(row.querySelector('.ae-cover-preview'), row.querySelector('.ae-cover-remove'), dataUrl)
+
+        try {
+          showToast('Enviando capa gerada...')
+          const url = await uploadToStorage(dataUrl, 'images', `ebook-cover-pdf-${Date.now()}.jpg`)
+          row.querySelector('.ae-cover').value = url
+          updateImagePreview(row.querySelector('.ae-cover-preview'), row.querySelector('.ae-cover-remove'), url)
+        } catch {
+          row.querySelector('.ae-cover').value = dataUrl
+          updateImagePreview(row.querySelector('.ae-cover-preview'), row.querySelector('.ae-cover-remove'), dataUrl)
+        }
+
         syncEbooksFromDom()
         renderEbooksList()
-        persistNow()
         markDirty()
       } catch {
         alert('Não foi possível gerar a capa. Verifique se o PDF foi carregado corretamente.')
       } finally {
         btn.disabled = false
-        btn.innerHTML = '<i data-lucide="file-image"></i> Gerar do PDF'
+        btn.innerHTML = '<i data-lucide="file-image"></i> Da 1ª pág. do PDF'
         window.lucide?.createIcons()
       }
     })()
@@ -985,7 +1078,6 @@ ebooksEditorList.addEventListener('click', (e) => {
       else if (expandedEbookIndex === index + 1) expandedEbookIndex = index
     }
     renderEbooksList()
-    persistNow()
     markDirty()
     updateDashboardStats()
     return
@@ -1001,10 +1093,9 @@ ebooksEditorList.addEventListener('click', (e) => {
 
 addEbookBtn.addEventListener('click', () => {
   syncEbooksFromDom()
-  ebooksState.push({ status: 'free', title: '', description: '', price: '', cover: '', downloadUrl: '' })
+  ebooksState.push({ status: 'free', title: '', description: '', price: '', cover: '', downloadUrl: '', showInLinks: true })
   expandedEbookIndex = ebooksState.length - 1
   renderEbooksList()
-  persistNow()
   markDirty()
   updateDashboardStats()
   showToast('E-book criado')
@@ -1071,7 +1162,6 @@ function setupDragReorder(container, cardClass, getArray, onReordered) {
 
 setupDragReorder(linksEditorList, 'admin-link-card', () => state.links, () => {
   renderLinksList()
-  persistNow()
   markDirty()
 })
 
@@ -1083,27 +1173,52 @@ setupDragReorder(ebooksEditorList, 'admin-ebook-card', () => ebooksState, (from,
     else if (from > to && expandedEbookIndex >= to && expandedEbookIndex < from) expandedEbookIndex++
   }
   renderEbooksList()
-  persistNow()
   markDirty()
 })
 
 /* ─── CONFIGURAÇÕES ─── */
 
-resetBtn.addEventListener('click', () => {
-  if (!confirm('Restaurar os links, e-books e perfil para o padrão original? As alterações salvas serão perdidas.')) return
+resetBtn.addEventListener('click', async () => {
+  if (!confirm('Restaurar os links, e-books e perfil para o padrão original? As alterações salvas no servidor serão perdidas.')) return
 
-  resetData()
-  resetEbooks()
-  state = {
-    profile: { ...defaultProfile },
-    links: defaultLinks.map(link => ({ ...link })),
+  saveBtn.disabled = true
+  try {
+    await supabaseAdmin.from('site_config').upsert({
+      id: 'main',
+      profile_name:     defaultProfile.name,
+      profile_subtitle: defaultProfile.subtitle,
+      profile_avatar:   defaultProfile.avatar,
+      sobre_photo:      '',
+    })
+    await supabaseAdmin.from('links').delete().gt('position', -1)
+    await supabaseAdmin.from('links').insert(
+      defaultLinks.map((l, i) => ({
+        position: i, label: l.label, url: l.url, icon: l.icon, is_primary: l.primary || false
+      }))
+    )
+    await supabaseAdmin.from('ebooks').delete().gt('position', -1)
+    await supabaseAdmin.from('ebooks').insert(
+      defaultEbooks.map((e, i) => ({
+        position: i, title: e.title, description: e.description, status: e.status,
+        price: e.price, cover_url: e.cover, download_url: e.downloadUrl,
+        show_in_links: e.showInLinks !== false,
+      }))
+    )
+
+    state = { profile: { ...defaultProfile }, links: defaultLinks.map(l => ({ ...l })) }
+    ebooksState = defaultEbooks.map(e => ({ ...e }))
+    siteConfig = { sobrePhoto: '' }
+    sobrePhotoPreview.src = '/eu-sou-a-bianca.jpeg'
+    expandedEbookIndex = null
+
+    renderEditor()
+    markClean()
+    showToast('Restaurado para o padrão')
+  } catch (err) {
+    showToast('Erro ao restaurar: ' + (err.message || ''), 'error')
+  } finally {
+    saveBtn.disabled = false
   }
-  ebooksState = defaultEbooks.map(ebook => ({ ...ebook }))
-  expandedEbookIndex = null
-
-  renderEditor()
-  markClean()
-  showToast('Restaurado para o padrão')
 })
 
 logoutBtn.addEventListener('click', () => {
@@ -1141,8 +1256,8 @@ if (sessionStorage.getItem(AUTH_KEY) === '1') {
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close() })
 
   document.addEventListener('click', (e) => {
-    const img = e.target.closest('.admin-image-preview')
-    if (!img || !img.src || img.classList.contains('hidden')) return
-    open(img.src)
+    const imgEl = e.target.closest('.admin-image-preview')
+    if (!imgEl || !imgEl.src || imgEl.classList.contains('hidden')) return
+    open(imgEl.src)
   })
 })();

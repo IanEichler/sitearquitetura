@@ -108,13 +108,14 @@ if (processFill) {
   setInterval(advance, 2000)
 })()
 
-/* ─── FOTO DA SEÇÃO SOBRE (do admin) ─── */
-;(function loadSobrePhoto() {
+/* ─── FOTO DA SEÇÃO SOBRE (do Supabase) ─── */
+;(async function loadSobrePhoto() {
   try {
-    const cfg = JSON.parse(localStorage.getItem('bv-site-config') || '{}')
-    if (cfg.sobrePhoto) {
+    const { supabase } = await import('./supabase.js')
+    const { data } = await supabase.from('site_config').select('sobre_photo').eq('id', 'main').single()
+    if (data?.sobre_photo) {
       const img = document.querySelector('.sobre-img-wrap img')
-      if (img) img.src = cfg.sobrePhoto
+      if (img) img.src = data.sobre_photo
     }
   } catch {}
 })()

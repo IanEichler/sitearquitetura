@@ -1,4 +1,4 @@
-export const EBOOKS_STORAGE_KEY = 'bv-ebooks-data'
+import { supabase } from './supabase.js'
 
 export const defaultEbooks = [
   {
@@ -20,21 +20,20 @@ export const defaultEbooks = [
   },
 ]
 
-export function loadEbooks() {
+export async function loadEbooks() {
   try {
-    const raw = localStorage.getItem(EBOOKS_STORAGE_KEY)
-    if (raw) {
-      const parsed = JSON.parse(raw)
-      if (Array.isArray(parsed)) return parsed
-    }
-  } catch {}
-  return defaultEbooks.map(ebook => ({ ...ebook }))
-}
-
-export function saveEbooks(ebooks) {
-  localStorage.setItem(EBOOKS_STORAGE_KEY, JSON.stringify(ebooks))
-}
-
-export function resetEbooks() {
-  localStorage.removeItem(EBOOKS_STORAGE_KEY)
+    const { data, error } = await supabase.from('ebooks').select('*').order('position')
+    if (error || !data?.length) return defaultEbooks.map(e => ({ ...e }))
+    return data.map(e => ({
+      status:      e.status      || 'free',
+      title:       e.title       || '',
+      description: e.description || '',
+      price:       e.price       || '',
+      cover:       e.cover_url   || '',
+      downloadUrl: e.download_url || '',
+      showInLinks: e.show_in_links !== false,
+    }))
+  } catch {
+    return defaultEbooks.map(e => ({ ...e }))
+  }
 }

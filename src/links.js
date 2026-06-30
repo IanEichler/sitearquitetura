@@ -1,5 +1,5 @@
-import { loadData, STORAGE_KEY } from './links-data.js'
-import { loadEbooks, EBOOKS_STORAGE_KEY } from './ebooks-data.js'
+import { loadData } from './links-data.js'
+import { loadEbooks } from './ebooks-data.js'
 
 function escapeHtml(str) {
   const div = document.createElement('div')
@@ -7,9 +7,6 @@ function escapeHtml(str) {
   return div.innerHTML
 }
 
-/* Links internos começam com "/", "#", "mailto:" ou "tel:".
-   Qualquer outra coisa (ex.: "youtube.com") é tratada como link
-   externo e recebe "https://" automaticamente se faltar o protocolo. */
 function isInternalUrl(url) {
   return /^(\/|#|mailto:|tel:)/i.test((url ?? '').trim())
 }
@@ -53,9 +50,8 @@ function renderEbookBtn(ebook) {
   `
 }
 
-function render() {
-  const { profile, links } = loadData()
-  const ebooks = loadEbooks()
+async function render() {
+  const [{ profile, links }, ebooks] = await Promise.all([loadData(), loadEbooks()])
 
   const profileEl = document.getElementById('linksProfile')
   profileEl.innerHTML = `
@@ -151,12 +147,6 @@ document.readyState === 'loading'
   init()
   tick()
 })();
-
-/* Permite que o painel admin atualize esta página em tempo real
-   (ex.: dentro de um iframe de pré-visualização) quando os dados mudam. */
-window.addEventListener('storage', (e) => {
-  if (e.key === STORAGE_KEY || e.key === EBOOKS_STORAGE_KEY) render()
-})
 
 const footerYear = document.getElementById('footerYear')
 if (footerYear) footerYear.textContent = new Date().getFullYear()

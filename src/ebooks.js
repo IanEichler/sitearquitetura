@@ -1,4 +1,4 @@
-import { loadEbooks, EBOOKS_STORAGE_KEY } from './ebooks-data.js'
+import { loadEbooks } from './ebooks-data.js'
 
 function escapeHtml(str) {
   const div = document.createElement('div')
@@ -6,9 +6,6 @@ function escapeHtml(str) {
   return div.innerHTML
 }
 
-/* Mesmo critério de src/links.js: links internos começam com "/", "#",
-   "mailto:" ou "tel:". Qualquer outra coisa recebe "https://" automaticamente
-   se faltar o protocolo. */
 function isInternalUrl(url) {
   return /^(\/|#|mailto:|tel:)/i.test((url ?? '').trim())
 }
@@ -153,14 +150,13 @@ function initLightbox() {
   lb.addEventListener('click', (e) => { if (e.target === lb) close() })
   closeBtn.addEventListener('click', close)
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close() })
-
 }
 
-function render() {
+async function render() {
   const grid = document.getElementById('ebooksGrid')
   if (!grid) return
 
-  const ebooks = loadEbooks()
+  const ebooks = await loadEbooks()
   grid.innerHTML = ebooks.map(renderCard).join('')
 
   window.lucide?.createIcons()
@@ -170,7 +166,7 @@ document.readyState === 'loading'
   ? document.addEventListener('DOMContentLoaded', () => { render(); initLightbox() })
   : (render(), initLightbox())
 
-/* download de PDFs armazenados como data URL (evita about:blank#blocked) */
+/* download de PDFs armazenados como data URL */
 document.addEventListener('click', (e) => {
   const btn = e.target.closest('.ae-download-blob')
   if (!btn) return
@@ -188,10 +184,4 @@ document.addEventListener('click', (e) => {
   document.body.appendChild(a); a.click()
   document.body.removeChild(a)
   setTimeout(() => URL.revokeObjectURL(url), 1000)
-})
-
-/* Permite que o painel admin atualize esta página em tempo real
-   (ex.: dentro de um iframe de pré-visualização) quando os dados mudam. */
-window.addEventListener('storage', (e) => {
-  if (e.key === EBOOKS_STORAGE_KEY) render()
 })
