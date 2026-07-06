@@ -37,11 +37,25 @@ const hamburger  = document.getElementById('hamburger')
 const mobileMenu = document.getElementById('mobileMenu')
 const mobileClose= document.getElementById('mobileClose')
 
-hamburger.addEventListener('click', () => mobileMenu.classList.add('open'))
-mobileClose.addEventListener('click', () => mobileMenu.classList.remove('open'))
-document.querySelectorAll('.mobile-link').forEach(link => {
-  link.addEventListener('click', () => mobileMenu.classList.remove('open'))
+function closeMobileMenu() {
+  mobileMenu.classList.remove('open')
+  hamburger.classList.remove('open')
+  document.body.style.overflow = ''
+}
+function openMobileMenu() {
+  mobileMenu.classList.add('open')
+  hamburger.classList.add('open')
+  document.body.style.overflow = 'hidden'
+}
+
+hamburger.addEventListener('click', () => {
+  mobileMenu.classList.contains('open') ? closeMobileMenu() : openMobileMenu()
 })
+mobileClose.addEventListener('click', closeMobileMenu)
+document.querySelectorAll('.mobile-link').forEach(link => {
+  link.addEventListener('click', closeMobileMenu)
+})
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMobileMenu() })
 
 /* ─── SCROLL REVEAL ─── */
 const revealObserver = new IntersectionObserver(

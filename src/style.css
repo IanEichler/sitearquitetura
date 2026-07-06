@@ -151,9 +151,10 @@ button:active, .btn:active {
   transition-duration: .12s;
 }
 
-button:focus, .btn:focus {
+button:focus, .btn:focus,
+button:focus-visible, .btn:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 6px rgba(24,122,204,.10);
+  box-shadow: none;
 }
 
 /* subtle pulse for emphasis (used on primary CTAs) */
@@ -208,7 +209,7 @@ button:focus, .btn:focus {
 .btn-dark     { background: var(--navy); color: #fff; }
 .btn-dark:hover { background: #0E2F52; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(10,37,64,.3); }
 .btn-whatsapp { background: var(--wa); color: #fff; box-shadow: 0 4px 20px rgba(37,211,102,.32); }
-.btn-whatsapp svg, .btn-whatsapp i { width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.btn-whatsapp svg, .btn-whatsapp i { width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .btn-whatsapp:hover { background: #1dab56; transform: translateY(-2px); }
 .btn-ghost    { background: rgba(255,255,255,.08); color: #fff; border: 1.5px solid rgba(255,255,255,.2); }
 .btn-ghost:hover { background: rgba(255,255,255,.14); }
@@ -304,14 +305,10 @@ button:focus, .btn:focus {
   box-shadow: 0 8px 22px rgba(6,12,18,0.22);
   position: relative; z-index: 1001;
 }
-.nav-logo { display: flex; align-items: center; gap: 12px; flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: rgba(6,16,24,0.78); box-shadow: 0 6px 18px rgba(3,6,10,0.35); }
-/* hide the decorative B logo and its square everywhere */
-.logo-mark, .logo-mark.small, .logo-letter { display: none !important; }
-.logo-text {
-  font-family: var(--fb); font-weight: 600; font-size: 17px; color: #fff;
-  letter-spacing: .1em;
-  text-shadow: 0 1px 8px rgba(0,0,0,0.45);
-}
+.nav-logo { display: flex; align-items: center; flex-shrink: 0; }
+.nav-logo-img { height: 38px; width: auto; display: block; object-fit: contain; }
+.footer-logo-img { height: 44px; width: auto; display: block; object-fit: contain; }
+.logo-mark, .logo-mark.small, .logo-letter, .logo-text { display: none !important; }
 .nav-links { display: flex; align-items: center; gap: 34px; margin: 0 auto; }
 .nav-links a {
   font-size: 13px; font-weight: 500; color: rgba(255,255,255,.9);
@@ -321,14 +318,18 @@ button:focus, .btn:focus {
 .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px; background: var(--gold); transition: width var(--t); }
 .nav-links a:hover { color: #fff; }
 .nav-links a:hover::after { width: 100%; }
-.nav-cta { padding: 10px 18px; font-size: 14px; margin-left: auto; border-radius: 12px; background: rgba(255,210,140,0.06); border: 1.6px solid rgba(255,200,120,0.5); color: rgba(255,210,140,0.98); font-weight: 600; }
+.nav-cta { padding: 10px 18px; font-size: 14px; margin-left: auto; border-radius: 12px; background: rgba(255,210,140,0.06); border: 1.6px solid rgba(255,200,120,0.5); color: rgba(255,210,140,0.98); font-weight: 600; box-shadow: none; }
 .nav-cta:hover { background: rgba(255,210,140,0.12); transform: translateY(-2px); }
+.nav-cta:focus, .nav-cta:focus-visible, .nav-cta:hover, .nav-cta:active { box-shadow: none !important; outline: none !important; }
 
 /* make the CTA more gold on scrolled state */
 #navbar.scrolled .nav-cta { border-color: rgba(255,200,120,0.28); color: var(--gold); }
 
-.hamburger { display: none; flex-direction: column; gap: 5px; padding: 4px; }
+.hamburger { display: none; flex-direction: column; gap: 5px; padding: 4px; margin-left: auto; }
 .hamburger span { display: block; width: 22px; height: 1.5px; background: #fff; border-radius: 2px; transition: var(--t); }
+.hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
 .mobile-menu {
   position: fixed; inset: 0; background: var(--navy);
@@ -351,7 +352,7 @@ button:focus, .btn:focus {
   padding: 140px 0 80px;
 }
 .hero-bg { position: absolute; inset: 0; z-index: 0; }
-.hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: 65% 35%; transform: scale(1.02); display: block; }
+.hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: 55% 0%; transform: scale(1.18) translateY(8%); display: block; }
 .hero-overlay {
   position: absolute; inset: 0; z-index: 1;
   background: linear-gradient(90deg, rgba(18,20,24,.78) 0%, rgba(18,20,24,.60) 35%, rgba(18,20,24,.28) 70%, rgba(18,20,24,.08) 100%);
@@ -365,7 +366,9 @@ button:focus, .btn:focus {
   display: inline-flex; align-items: center; gap: 8px;
   background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15);
   color: rgba(255,255,255,.8); font-size: 12px; font-weight: 400;
-  padding: 7px 14px; border-radius: 100px; margin-bottom: 24px;
+  padding: 7px 14px; border-radius: 100px;
+  position: absolute; z-index: 3;
+  top: calc(50vh - 220px); left: clamp(24px, 6vw, 96px);
   opacity: 0; animation: fadeUp .6s var(--eo) .2s forwards;
 }
 .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); }
@@ -452,7 +455,21 @@ button:focus, .btn:focus {
 .float-label { font-size: 12px; font-weight: 300; color: rgba(255,255,255,.75); }
 
 /* ─────────────── SERVIÇOS ─────────────── */
-#servicos { background: var(--navy-deep); padding: 130px 0; }
+#servicos {
+  background: var(--navy);
+  padding: 130px 0;
+  position: relative;
+  isolation: isolate;
+}
+#servicos::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+#servicos > * { position: relative; z-index: 1; }
 #servicos .section-badge span { color: rgba(255,255,255,.5); }
 #servicos .badge-line { background: rgba(255,255,255,.3); }
 #servicos .section-title { color: #fff; }
@@ -534,7 +551,21 @@ button:focus, .btn:focus {
 .servicos-cta .btn svg { width: 18px; height: 18px; fill: currentColor; }
 
 /* ─────────────── ATENDIMENTO NACIONAL ─────────────── */
-#atendimento-nacional { background: var(--navy-deep); padding: 130px 0; }
+#atendimento-nacional {
+  background: var(--navy);
+  padding: 130px 0;
+  position: relative;
+  isolation: isolate;
+}
+#atendimento-nacional::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+#atendimento-nacional > * { position: relative; z-index: 1; }
 
 .nacional-grid {
   display: grid;
@@ -590,20 +621,30 @@ button:focus, .btn:focus {
 /* ─────────────── PROCESSO ─────────────── */
 #processo {
   background: var(--navy);
-  padding: 130px 0;
+  padding: 80px 0;
   position: relative;
   overflow: hidden;
+  isolation: isolate;
 }
-/* spotlight azul central */
+/* grid de quadrados */
 #processo::before {
   content: '';
-  position: absolute;
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+/* spotlight azul central */
+#processo::after {
+  content: '';
+  position: absolute; z-index: 0; pointer-events: none;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   width: 900px; height: 500px;
   background: radial-gradient(ellipse, rgba(0,74,173,.13) 0%, transparent 68%);
-  pointer-events: none;
 }
+#processo > * { position: relative; z-index: 1; }
 #processo .section-badge span { color: rgba(255,255,255,.45); }
 #processo .badge-line { background: rgba(255,255,255,.25); }
 .processo-header { flex-direction: column; align-items: center; text-align: center; margin-bottom: 0; }
@@ -782,11 +823,11 @@ button:focus, .btn:focus {
 /* ─────────────── EBOOKS ─────────────── */
 #ebooks { background: var(--white); padding: 130px 0; }
 
-.ebooks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; }
+.ebooks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; align-items: stretch; }
 .ebooks-grid:has(.ebook-card:only-child) { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; }
 
 .ebook-card {
-  display: grid; grid-template-columns: 180px 1fr; gap: 32px; align-items: center;
+  display: grid; grid-template-columns: 180px 1fr; gap: 32px; align-items: stretch;
   background: var(--off); border-radius: var(--r); padding: 32px;
 }
 .ebook-card .ebook-cover { width: 180px; height: 252px; flex-shrink: 0; }
@@ -898,6 +939,7 @@ button:focus, .btn:focus {
 .ebook-cover-author { font-size: 11px; font-weight: 400; letter-spacing: .08em; color: rgba(255,255,255,.55); text-transform: uppercase; }
 
 .ebook-info { display: flex; flex-direction: column; }
+.ebook-info .ae-open-pdf, .ebook-info .btn { margin-top: auto; }
 .ebook-price {
   display: inline-block; font-family: var(--fb); font-size: 12px; font-weight: 600;
   letter-spacing: .08em; text-transform: uppercase; color: var(--blue-l); margin-bottom: 10px;
@@ -910,8 +952,17 @@ button:focus, .btn:focus {
 
 /* ─────────────── CONTATO ─────────────── */
 #contato {
-  background: var(--navy-deep);
+  background: var(--navy);
   padding: 130px 0;
+  isolation: isolate;
+}
+#contato::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 40px 40px;
 }
 
 /* degradê radial de fundo */
@@ -962,11 +1013,10 @@ button:focus, .btn:focus {
   box-shadow: 0 16px 48px rgba(37,211,102,.4);
 }
 .contato-wa-icon {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: rgba(255,255,255,.18);
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
+.contato-wa-icon svg { color: #fff; width: 24px; height: 24px; }
 .contato-microfrase {
   margin-top: 16px;
   font-size: 12px; color: rgba(255,255,255,.3);
@@ -1269,11 +1319,25 @@ button:focus, .btn:focus {
   .hamburger { display: flex; }
 
   #hero { padding: 120px 0 60px; }
-  .hero-text { max-width: 100%; }
+  .hero-bg img { transform: none; object-position: 55% 5%; }
+  .hero-text {
+    width: 100%; max-width: 100%;
+    padding: 0 24px; box-sizing: border-box;
+    text-align: center;
+  }
+  .hero-badge {
+    top: 258px;
+    left: 0; right: 0;
+    margin: 0 auto;
+    width: fit-content;
+  }
+  .hero-title { font-size: clamp(28px, 7.5vw, 44px); }
+  .hero-title .nowrap { white-space: normal; }
+  .hero-sub { max-width: 100%; }
   .hero-overlay {
     background: linear-gradient(180deg, rgba(7,26,46,.55) 0%, rgba(7,26,46,.95) 100%);
   }
-  .hero-btns { flex-direction: column; }
+  .hero-btns { flex-direction: column; align-items: center; }
   .hero-btns .btn { width: 100%; justify-content: center; }
 
   .stats-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
@@ -1316,7 +1380,8 @@ button:focus, .btn:focus {
 
 @media (max-width: 480px) {
   .process-steps { grid-template-columns: 1fr; }
-  .hero-title { font-size: clamp(36px, 11vw, 52px); }
+  .hero-title { font-size: clamp(24px, 8vw, 36px); }
+  .hero-title .nowrap { white-space: normal; }
 
   .sobre-img-wrap { height: 260px; }
   .sobre-img-wrap img { object-position: 38% center; }
