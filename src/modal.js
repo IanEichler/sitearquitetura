@@ -7,6 +7,7 @@ const SERVICES = [
   'Testamento e Planejamento Sucessório',
   'Pactos Antenupciais e Regime de Bens',
   'Reconhecimento de União Estável e Paternidade',
+  'Outro',
 ]
 
 const STEPS = [
@@ -46,7 +47,7 @@ const STEPS = [
   },
 ]
 
-let state = { nome: '', telefone: '', servico: '', descricao: '' }
+let state = { nome: '', telefone: '', servico: '', servicoCustom: '', descricao: '' }
 let currentStep = 0
 
 export function initModal() {
@@ -62,9 +63,15 @@ function buildDOM() {
   el.innerHTML = `
     <div class="orc-backdrop" id="orcBackdrop"></div>
     <div class="orc-card" role="dialog" aria-modal="true" aria-label="Agendar Consulta">
-      <button class="orc-close" id="orcClose" aria-label="Fechar">
-        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+      <div class="orc-card-header">
+        <button class="orc-back" id="orcBack" aria-label="Voltar" style="visibility:hidden">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Voltar
+        </button>
+        <button class="orc-close" id="orcClose" aria-label="Fechar">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
 
       <div class="orc-progress-wrap">
         <div class="orc-progress-bar" id="orcProgressBar"></div>
@@ -77,6 +84,7 @@ function buildDOM() {
 
   document.getElementById('orcBackdrop').addEventListener('click', closeModal)
   document.getElementById('orcClose').addEventListener('click', closeModal)
+  document.getElementById('orcBack').addEventListener('click', goBack)
   document.addEventListener('keydown', onKeyDown)
 
   renderStep(0)
@@ -86,9 +94,13 @@ function buildDOM() {
 function renderStep(idx) {
   const step = STEPS[idx]
   const stepsEl = document.getElementById('orcSteps')
-  const progress = ((idx) / STEPS.length) * 100
+  const progress = (idx / STEPS.length) * 100
 
   document.getElementById('orcProgressBar').style.width = progress + '%'
+
+  /* back button visibility */
+  const backBtn = document.getElementById('orcBack')
+  if (backBtn) backBtn.style.visibility = idx > 0 ? 'visible' : 'hidden'
 
   const html = `
     <div class="orc-step" data-step="${idx}">
@@ -116,6 +128,12 @@ function renderStep(idx) {
           ${SERVICES.map(s => `
             <button class="orc-option${state.servico === s ? ' selected' : ''}" data-value="${s}">${s}</button>
           `).join('')}
+        </div>
+        <div id="orcOutroWrap" class="orc-outro-wrap" style="display:${state.servico === 'Outro' ? 'flex' : 'none'}">
+          <input class="orc-input" id="orcOutroInput" type="text" placeholder="Descreva brevemente sua área de interesse" value="${state.servicoCustom || ''}" />
+          <button class="btn btn-primary orc-btn-next" id="orcOutroNext">
+            Continuar <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
         </div>
       ` : ''}
 
@@ -157,6 +175,13 @@ function focusInput() {
   }, 60)
 }
 
+/* ─── BACK ─── */
+function goBack() {
+  if (currentStep <= 0) return
+  currentStep--
+  renderStep(currentStep)
+}
+
 /* ─── BIND EVENTS ─── */
 function bindStepEvents(idx) {
   const step = STEPS[idx]
@@ -189,8 +214,29 @@ function bindStepEvents(idx) {
         state.servico = btn.dataset.value
         document.querySelectorAll('.orc-option').forEach(b => b.classList.remove('selected'))
         btn.classList.add('selected')
-        setTimeout(() => advance(idx), 300)
+
+        const outroWrap = document.getElementById('orcOutroWrap')
+        if (state.servico === 'Outro') {
+          outroWrap.style.display = 'flex'
+          document.getElementById('orcOutroInput')?.focus()
+        } else {
+          outroWrap.style.display = 'none'
+          state.servicoCustom = ''
+          setTimeout(() => advance(idx), 300)
+        }
       })
+    })
+
+    document.getElementById('orcOutroNext')?.addEventListener('click', () => {
+      state.servicoCustom = document.getElementById('orcOutroInput')?.value.trim() || ''
+      advance(idx)
+    })
+
+    document.getElementById('orcOutroInput')?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        state.servicoCustom = e.target.value.trim()
+        advance(idx)
+      }
     })
   }
 
@@ -238,12 +284,16 @@ function submit() {
   const ta = document.getElementById('orcTextarea')
   if (ta) state.descricao = ta.value.trim()
 
+  const servicoLabel = state.servico === 'Outro' && state.servicoCustom
+    ? `Outro — ${state.servicoCustom}`
+    : state.servico
+
   const lines = [
     `Olá, Bianca Viana! Vim pelo site.`,
     ``,
     `*Nome:* ${state.nome}`,
     `*WhatsApp:* ${state.telefone}`,
-    `*Área de interesse:* ${state.servico}`,
+    `*Área de interesse:* ${servicoLabel}`,
   ]
   if (state.descricao) {
     lines.push(``, `*Situação:*`, state.descricao)
@@ -252,7 +302,6 @@ function submit() {
   const text = encodeURIComponent(lines.join('\n'))
   window.open(`https://wa.me/${WA_NUMBER}?text=${text}`, '_blank')
 
-  /* atualiza progress a 100% e mostra confirmação */
   document.getElementById('orcProgressBar').style.width = '100%'
   document.getElementById('orcSteps').innerHTML = `
     <div class="orc-step orc-done">
@@ -269,7 +318,7 @@ function submit() {
 
 /* ─── OPEN / CLOSE ─── */
 export function openModal() {
-  state = { nome: '', telefone: '', servico: '', descricao: '' }
+  state = { nome: '', telefone: '', servico: '', servicoCustom: '', descricao: '' }
   currentStep = 0
   renderStep(0)
 

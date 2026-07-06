@@ -1193,8 +1193,21 @@ button:focus-visible, .btn:focus-visible {
 }
 .orc-modal.open .orc-card { transform: translateY(0) scale(1); }
 
+.orc-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px 0;
+}
+.orc-back {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: none; border: none; cursor: pointer;
+  color: var(--g400); font-family: var(--fb); font-size: 13px; font-weight: 500;
+  padding: 6px 4px; border-radius: 8px;
+  transition: color var(--t);
+}
+.orc-back:hover { color: var(--navy); }
+.orc-back svg { flex-shrink: 0; stroke: currentColor; }
+
 .orc-close {
-  position: absolute; top: 18px; right: 18px;
   width: 36px; height: 36px; border-radius: 50%;
   background: var(--g100); display: flex; align-items: center;
   justify-content: center; cursor: pointer; transition: background var(--t);
@@ -1202,6 +1215,12 @@ button:focus-visible, .btn:focus-visible {
 }
 .orc-close:hover { background: var(--g200); }
 .orc-close svg { width: 16px; height: 16px; stroke: var(--navy); stroke-width: 2; fill: none; }
+
+.orc-outro-wrap {
+  flex-direction: column; gap: 12px; margin-top: 16px;
+}
+.orc-outro-wrap .orc-input { width: 100%; }
+.orc-outro-wrap .orc-btn-next { align-self: flex-start; }
 
 /* barra de progresso */
 .orc-progress-wrap { height: 3px; background: var(--g100); }
