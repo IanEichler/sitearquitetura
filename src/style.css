@@ -352,7 +352,8 @@ button:focus-visible, .btn:focus-visible {
   padding: 140px 0 80px;
 }
 .hero-bg { position: absolute; inset: 0; z-index: 0; }
-.hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: 55% 0%; transform: scale(1.18) translateY(8%); display: block; }
+.hero-bg picture { display: block; width: 100%; height: 100%; }
+.hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: 55% 0%; transform: scale(1.18) translateY(8%); display: block; animation: none !important; transition: none !important; }
 .hero-overlay {
   position: absolute; inset: 0; z-index: 1;
   background: linear-gradient(90deg, rgba(18,20,24,.78) 0%, rgba(18,20,24,.60) 35%, rgba(18,20,24,.28) 70%, rgba(18,20,24,.08) 100%);
@@ -1403,7 +1404,7 @@ button:focus-visible, .btn:focus-visible {
   .hamburger { display: flex; }
 
   #hero { padding: 120px 0 60px; }
-  .hero-bg img { transform: none; object-position: 55% 5%; }
+  .hero-bg img { transform: none; object-position: 55% 5%; animation: none !important; transition: none !important; }
   .hero-text {
     width: 100%; max-width: 100%;
     padding: 0 24px; box-sizing: border-box;

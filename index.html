@@ -46,7 +46,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <link rel="preload" as="image" href="/bianca-viana-hero.png" fetchpriority="high" />
+  <link rel="preload" as="image" href="/bianca-viana-hero.webp" fetchpriority="high" type="image/webp" />
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
 
   <link rel="stylesheet" href="/src/style.css" />
@@ -91,11 +91,15 @@
   <!-- ── HERO ── -->
   <section id="hero">
     <div class="hero-bg">
-      <img
-        src="/bianca-viana-hero.png" fetchpriority="high"
-        alt="Bianca Viana — Advocacia de Família e Sucessões"
-        loading="eager"
-      />
+      <picture>
+        <source media="(max-width: 768px)" srcset="/bianca-viana-hero-mobile.webp" type="image/webp" />
+        <source srcset="/bianca-viana-hero.webp" type="image/webp" />
+        <img
+          src="/bianca-viana-hero.png" fetchpriority="high"
+          alt="Bianca Viana — Advocacia de Família e Sucessões"
+          loading="eager"
+        />
+      </picture>
     </div>
     <div class="hero-overlay"></div>
     <div class="hero-badge">
