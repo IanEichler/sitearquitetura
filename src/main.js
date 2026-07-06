@@ -1,15 +1,10 @@
 import Lenis from 'lenis'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import EmblaCarousel from 'embla-carousel'
-import Splitting from 'splitting'
-import 'splitting/dist/splitting.css'
-import 'splitting/dist/splitting-cells.css'
 import { initModal } from './modal.js'
 
 gsap.registerPlugin(ScrollTrigger)
 initModal()
-
 
 /* Lucide icons — aguarda CDN carregar */
 const initIcons = () => window.lucide && window.lucide.createIcons()
@@ -17,14 +12,16 @@ document.readyState === 'loading'
   ? document.addEventListener('DOMContentLoaded', initIcons)
   : initIcons()
 
-/* ─── LENIS SMOOTH SCROLL ─── */
-const lenis = new Lenis({
-  lerp: 0.1,
-  smoothWheel: true,
-})
-lenis.on('scroll', ScrollTrigger.update)
-gsap.ticker.add((time) => lenis.raf(time * 1000))
-gsap.ticker.lagSmoothing(0)
+/* ─── LENIS SMOOTH SCROLL (apenas desktop) ─── */
+const isMobile = () => window.innerWidth <= 768 || ('ontouchstart' in window)
+
+let lenis
+if (!isMobile()) {
+  lenis = new Lenis({ lerp: 0.1, smoothWheel: true })
+  lenis.on('scroll', ScrollTrigger.update)
+  gsap.ticker.add((time) => lenis.raf(time * 1000))
+  gsap.ticker.lagSmoothing(0)
+}
 
 /* ─── NAVBAR ─── */
 const navbar = document.getElementById('navbar')
@@ -142,18 +139,27 @@ if (footerYear) footerYear.textContent = new Date().getFullYear()
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', (e) => {
     const target = document.querySelector(anchor.getAttribute('href'))
-    if (target) {
-      e.preventDefault()
+    if (!target) return
+    e.preventDefault()
+    if (lenis) {
       lenis.scrollTo(target, { offset: -72, duration: 1.4 })
+    } else {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
   })
 })
 
-/* Scroll para hash da URL ao carregar a página (ex.: index.html#servicos) */
+/* Scroll para hash da URL ao carregar a página */
 if (window.location.hash) {
   const hashTarget = document.querySelector(window.location.hash)
   if (hashTarget) {
-    setTimeout(() => lenis.scrollTo(hashTarget, { offset: -72, duration: 1.2 }), 400)
+    setTimeout(() => {
+      if (lenis) {
+        lenis.scrollTo(hashTarget, { offset: -72, duration: 1.2 })
+      } else {
+        hashTarget.scrollIntoView({ behavior: 'smooth' })
+      }
+    }, 400)
   }
 }
 
@@ -183,25 +189,13 @@ if (form) {
 /* ─── CARROSSEL DEPOIMENTOS ─── */
 const testiTrack = document.getElementById('testiTrack')
 if (testiTrack) {
-  // Duplica os cards para loop contínuo
   testiTrack.innerHTML += testiTrack.innerHTML
-
-  // Pausa no hover
   testiTrack.closest('.testi-carousel-wrap')?.addEventListener('mouseenter', () => {
     testiTrack.classList.add('paused')
   })
   testiTrack.closest('.testi-carousel-wrap')?.addEventListener('mouseleave', () => {
     testiTrack.classList.remove('paused')
   })
-}
-
-/* ─── HERO PARALLAX SUTIL ─── */
-const heroBg = document.querySelector('.hero-img')
-if (heroBg) {
-  window.addEventListener('scroll', () => {
-    const scrolled = window.scrollY
-    heroBg.style.transform = `translateY(${scrolled * 0.25}px)`
-  }, { passive: true })
 }
 
 /* ─── COPY PHONE ─── */

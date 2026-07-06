@@ -14,6 +14,12 @@ export default defineConfig({
         links: resolve(__dirname, 'links.html'),
         admin: resolve(__dirname, 'admin.html'),
       },
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('node_modules/gsap')) return 'gsap'
+          if (id.includes('node_modules/@supabase')) return 'supabase'
+        },
+      },
     },
   },
 })
