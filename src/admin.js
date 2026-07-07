@@ -821,9 +821,6 @@ function renderEbooksList() {
                     <i data-lucide="image"></i> Imagem
                     <input type="file" class="ae-cover-file" accept="image/*" />
                   </label>
-                  <button type="button" class="admin-upload-btn ae-pdf-cover-btn">
-                    <i data-lucide="file-image"></i> Da 1ª pág. do PDF
-                  </button>
                 </div>
               </div>
             </div>
