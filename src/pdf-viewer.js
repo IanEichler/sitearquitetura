@@ -47,7 +47,11 @@ export function initPdfViewer() {
     pagesEl.textContent = ''
     wrap.innerHTML = `<div class="pdf-viewer-loading"><div class="pdf-viewer-spinner"></div><span>Carregando...</span></div>`
     modal.classList.add('open')
+    const scrollY = window.scrollY
     document.body.style.overflow = 'hidden'
+    document.body.style.position = 'fixed'
+    document.body.style.top = `-${scrollY}px`
+    document.body.style.width = '100%'
 
     try {
       const loadingTask = pdfjsLib.getDocument(url)
@@ -81,7 +85,12 @@ export function initPdfViewer() {
 
   function close() {
     modal.classList.remove('open')
+    const scrollY = Math.abs(parseInt(document.body.style.top || '0'))
     document.body.style.overflow = ''
+    document.body.style.position = ''
+    document.body.style.top = ''
+    document.body.style.width = ''
+    window.scrollTo(0, scrollY)
     renderTask?.cancel?.()
     setTimeout(() => {
       wrap.innerHTML = ''
