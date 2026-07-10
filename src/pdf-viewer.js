@@ -76,7 +76,7 @@ export function initPdfViewer() {
       }
     } catch (err) {
       if (err?.name === 'RenderingCancelledException') return
-      wrap.innerHTML = `<div class="pdf-viewer-error">Não foi possível carregar o PDF.<br><a href="${url}" target="_blank" rel="noopener">Abrir em nova aba</a></div>`
+      wrap.innerHTML = `<div class="pdf-viewer-error">Não foi possível carregar o PDF.</div>`
     }
   }
 
